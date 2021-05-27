@@ -69,6 +69,7 @@ namespace SINeuronWPFApp.Models
                     return false;
                 StepLearning();
             }
+            FinalizeEpoch();
             return true;
         }
 
@@ -80,11 +81,21 @@ namespace SINeuronWPFApp.Models
             CurrentError /= 2;
             if (CheckStopCondition())
                 CompletedLearning = true;
+            CurrentError = 0;
         }
 
-        public void InitializeWeight()
+        public void Initialize(List<Point> trainingSet)
         {
+            CompletedLearning = false;
+            CurrentError = 0;
+            EpochIterator = 0;
+            EpochSize = trainingSet.Count;
+            IterationCount = 0;
+            TrainingSet = trainingSet;
             var random = new Random();
+            if (Weights == null)
+                Weights = new double[3];
+
             for (int i = 0; i < Weights.Length; i++)
                 Weights[i] = random.Next() + random.NextDouble();
         }
@@ -92,6 +103,9 @@ namespace SINeuronWPFApp.Models
         // Wykonuje jeden krok uczenia dla jednego obiektu.
         public void StepLearning()
         {
+            if (TrainingSet == null)
+                throw new NullReferenceException("Zbior testowy jest nullem.");
+
             if (EpochIterator == EpochSize)
                 FinalizeEpoch();
             
@@ -104,6 +118,7 @@ namespace SINeuronWPFApp.Models
 
             // Liczenie błędu
             CurrentError += Math.Pow(point.Value - y, 2);
+            IterationCount++;
         }
 
         private void ModifyWeights(Point point)

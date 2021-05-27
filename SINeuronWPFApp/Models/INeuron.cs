@@ -36,7 +36,7 @@ namespace SINeuronWPFApp.Models
 
         public void FinalizeEpoch();
 
-        public void InitializeWeight();
+        public void Initialize(List<Point> trainingSet);
 
         public void StepLearning();
     }
