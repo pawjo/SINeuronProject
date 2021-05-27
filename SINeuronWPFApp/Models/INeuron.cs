@@ -4,6 +4,8 @@ namespace SINeuronWPFApp.Models
 {
     public interface INeuron
     {
+        public bool CompletedLearning { get; set; }
+
         public double CurrentError { get; set; }
 
         public int EpochSize { get; set; }
@@ -12,7 +14,15 @@ namespace SINeuronWPFApp.Models
 
         public double ErrorTolerance { get; set; }
 
+        public int IterationCount { get; set; }
+
+        public int IterationMax { get; set; }
+
         public double LearningRate { get; set; }
+        
+        public bool StopConditionErrorTolerance { get; set; }
+
+        public List<Point> TrainingSet { get; set; }
 
         public double[] Weights { get; set; }
 
@@ -22,10 +32,12 @@ namespace SINeuronWPFApp.Models
         
         public bool CheckStopCondition();
 
-        public void EpochLearning(List<Point> epoch);
+        public bool EpochLearning();
+
+        public void FinalizeEpoch();
 
         public void InitializeWeight();
 
-        public void StepLearning(Point point);
+        public void StepLearning();
     }
 }
