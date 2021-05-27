@@ -7,7 +7,7 @@ namespace SINeuronxUnitTests
 {
     public class PerceptronTests
     {
-        public INeuron neuron; 
+        public INeuron neuron;
 
         [Fact]
         public void NoWeightsModification()
@@ -18,7 +18,7 @@ namespace SINeuronxUnitTests
             Assert.Equal(expected, result);
         }
 
-        
+
 
         [Fact]
         public void EpochLearningTestNoModification()
@@ -65,6 +65,36 @@ namespace SINeuronxUnitTests
         }
 
         [Fact]
+        public void AutoLearningTest3()
+        {
+            InitializeNeuronWithWeights(-304, -40, 23, CreateExampleSet2());
+            neuron.AutoLearning();
+            bool expected = true;
+            bool result = neuron.CompletedLearning;
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void AutoLearningTest4()
+        {
+            InitializeNeuronWithWeights(-304, -40, 200, CreateExampleSet2());
+            neuron.AutoLearning();
+            bool expected = true;
+            bool result = neuron.CompletedLearning;
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void AutoLearningTest5_noSolution()
+        {
+            InitializeNeuronWithWeights(-304, -40, 200, CreateExampleSet3_noSolution());
+            neuron.AutoLearning();
+            bool expected = false;
+            bool result = neuron.CompletedLearning;
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
         public void MixedLearningTest1()
         {
             InitializeNeuronWithWeights(304, 45, 23, CreateExampleSet1());
@@ -77,27 +107,59 @@ namespace SINeuronxUnitTests
             Assert.Equal(expected, result);
         }
 
+        private string NeuronWeightsToString()
+        {
+            return $"w0 = {neuron.Weights[0]}," +
+                $" w1 = {neuron.Weights[1]}," +
+                $" w2 = {neuron.Weights[2]}";
+        }
+
         private static List<Point> CreateExampleSet1()
         {
             var set = new List<Point>();
-            set.Add(new Point
-            {
-                X = 1,
-                Y = 2,
-                Value = 1
-            });
-            set.Add(new Point
-            {
-                X = -5,
-                Y = 0,
-                Value = -1
-            });
-            set.Add(new Point
-            {
-                X = 5,
-                Y = 6,
-                Value = 1
-            });
+            set.Add(new Point { X = 1, Y = 2, Value = 1 });
+            set.Add(new Point { X = 5, Y = 6, Value = 1 });
+
+            set.Add(new Point { X = -5, Y = 0, Value = -1 });
+            return set;
+        }
+
+        private static List<Point> CreateExampleSet2()
+        {
+            var set = new List<Point>();
+            set.Add(new Point { X = -8, Y = 3, Value = 1 });
+            set.Add(new Point { X = -9, Y = 5, Value = 1 });
+            set.Add(new Point { X = -5, Y = 0, Value = 1 });
+            set.Add(new Point { X = -6, Y = 10, Value = 1 });
+            set.Add(new Point { X = -4, Y = 6, Value = 1 });
+
+            set.Add(new Point { X = 2, Y = 8, Value = -1 });
+            set.Add(new Point { X = 5, Y = 12, Value = -1 });
+            set.Add(new Point { X = 5, Y = 6, Value = -1 });
+            set.Add(new Point { X = 1, Y = 2, Value = -1 });
+            set.Add(new Point { X = 6, Y = 14, Value = -1 });
+            return set;
+        }
+
+        private static List<Point> CreateExampleSet3_noSolution()
+        {
+            var set = new List<Point>();
+            set.Add(new Point { X = -8, Y = 3, Value = 1 });
+            set.Add(new Point { X = -9, Y = 5, Value = 1 });
+            set.Add(new Point { X = -5, Y = 0, Value = 1 });
+            set.Add(new Point { X = -6, Y = 10, Value = 1 });
+            set.Add(new Point { X = -4, Y = 6, Value = 1 });
+
+            set.Add(new Point { X = 2, Y = 8, Value = -1 });
+            set.Add(new Point { X = 5, Y = 12, Value = -1 });
+            set.Add(new Point { X = 5, Y = 6, Value = -1 });
+            set.Add(new Point { X = 1, Y = 2, Value = -1 });
+            set.Add(new Point { X = 6, Y = 14, Value = -1 });
+
+            // punkt psujacy
+            set.Add(new Point { X = 7, Y = 12, Value = 1 });
+
+
             return set;
         }
 
