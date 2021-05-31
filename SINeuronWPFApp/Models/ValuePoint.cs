@@ -1,6 +1,6 @@
 ﻿namespace SINeuronWPFApp.Models
 {
-    public class Point
+    public class ValuePoint
     {
         public double X { get; set; }
         

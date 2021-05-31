@@ -23,7 +23,7 @@ namespace SINeuronWPFApp.Models
 
         public bool StopConditionErrorTolerance { get; set; }
 
-        public List<Point> TrainingSet { get; set; }
+        public List<ValuePoint> TrainingSet { get; set; }
 
         public double[] Weights { get; set; }
 
@@ -84,7 +84,7 @@ namespace SINeuronWPFApp.Models
             CurrentError = 0;
         }
 
-        public void Initialize(List<Point> trainingSet)
+        public void Initialize(List<ValuePoint> trainingSet)
         {
             CompletedLearning = false;
             CurrentError = 0;
@@ -121,7 +121,7 @@ namespace SINeuronWPFApp.Models
             IterationCount++;
         }
 
-        private void ModifyWeights(Point point)
+        private void ModifyWeights(ValuePoint point)
         {
             Weights[0] = Weights[0] + point.Value;
             Weights[1] = Weights[1] + point.X * point.Value;

@@ -12,7 +12,7 @@ namespace SINeuronxUnitTests
         [Fact]
         public void NoWeightsModification()
         {
-            List<Point> set = CreateExampleSet1();
+            List<ValuePoint> set = CreateExampleSet1();
             int expected = 0;
             int result = modifyWeightTestShema(3, 15, 23, set);
             Assert.Equal(expected, result);
@@ -114,56 +114,56 @@ namespace SINeuronxUnitTests
                 $" w2 = {neuron.Weights[2]}";
         }
 
-        private static List<Point> CreateExampleSet1()
+        private static List<ValuePoint> CreateExampleSet1()
         {
-            var set = new List<Point>();
-            set.Add(new Point { X = 1, Y = 2, Value = 1 });
-            set.Add(new Point { X = 5, Y = 6, Value = 1 });
+            var set = new List<ValuePoint>();
+            set.Add(new ValuePoint { X = 1, Y = 2, Value = 1 });
+            set.Add(new ValuePoint { X = 5, Y = 6, Value = 1 });
 
-            set.Add(new Point { X = -5, Y = 0, Value = -1 });
+            set.Add(new ValuePoint { X = -5, Y = 0, Value = -1 });
             return set;
         }
 
-        private static List<Point> CreateExampleSet2()
+        private static List<ValuePoint> CreateExampleSet2()
         {
-            var set = new List<Point>();
-            set.Add(new Point { X = -8, Y = 3, Value = 1 });
-            set.Add(new Point { X = -9, Y = 5, Value = 1 });
-            set.Add(new Point { X = -5, Y = 0, Value = 1 });
-            set.Add(new Point { X = -6, Y = 10, Value = 1 });
-            set.Add(new Point { X = -4, Y = 6, Value = 1 });
+            var set = new List<ValuePoint>();
+            set.Add(new ValuePoint { X = -8, Y = 3, Value = 1 });
+            set.Add(new ValuePoint { X = -9, Y = 5, Value = 1 });
+            set.Add(new ValuePoint { X = -5, Y = 0, Value = 1 });
+            set.Add(new ValuePoint { X = -6, Y = 10, Value = 1 });
+            set.Add(new ValuePoint { X = -4, Y = 6, Value = 1 });
 
-            set.Add(new Point { X = 2, Y = 8, Value = -1 });
-            set.Add(new Point { X = 5, Y = 12, Value = -1 });
-            set.Add(new Point { X = 5, Y = 6, Value = -1 });
-            set.Add(new Point { X = 1, Y = 2, Value = -1 });
-            set.Add(new Point { X = 6, Y = 14, Value = -1 });
+            set.Add(new ValuePoint { X = 2, Y = 8, Value = -1 });
+            set.Add(new ValuePoint { X = 5, Y = 12, Value = -1 });
+            set.Add(new ValuePoint { X = 5, Y = 6, Value = -1 });
+            set.Add(new ValuePoint { X = 1, Y = 2, Value = -1 });
+            set.Add(new ValuePoint { X = 6, Y = 14, Value = -1 });
             return set;
         }
 
-        private static List<Point> CreateExampleSet3_noSolution()
+        private static List<ValuePoint> CreateExampleSet3_noSolution()
         {
-            var set = new List<Point>();
-            set.Add(new Point { X = -8, Y = 3, Value = 1 });
-            set.Add(new Point { X = -9, Y = 5, Value = 1 });
-            set.Add(new Point { X = -5, Y = 0, Value = 1 });
-            set.Add(new Point { X = -6, Y = 10, Value = 1 });
-            set.Add(new Point { X = -4, Y = 6, Value = 1 });
+            var set = new List<ValuePoint>();
+            set.Add(new ValuePoint { X = -8, Y = 3, Value = 1 });
+            set.Add(new ValuePoint { X = -9, Y = 5, Value = 1 });
+            set.Add(new ValuePoint { X = -5, Y = 0, Value = 1 });
+            set.Add(new ValuePoint { X = -6, Y = 10, Value = 1 });
+            set.Add(new ValuePoint { X = -4, Y = 6, Value = 1 });
 
-            set.Add(new Point { X = 2, Y = 8, Value = -1 });
-            set.Add(new Point { X = 5, Y = 12, Value = -1 });
-            set.Add(new Point { X = 5, Y = 6, Value = -1 });
-            set.Add(new Point { X = 1, Y = 2, Value = -1 });
-            set.Add(new Point { X = 6, Y = 14, Value = -1 });
+            set.Add(new ValuePoint { X = 2, Y = 8, Value = -1 });
+            set.Add(new ValuePoint { X = 5, Y = 12, Value = -1 });
+            set.Add(new ValuePoint { X = 5, Y = 6, Value = -1 });
+            set.Add(new ValuePoint { X = 1, Y = 2, Value = -1 });
+            set.Add(new ValuePoint { X = 6, Y = 14, Value = -1 });
 
             // punkt psujacy
-            set.Add(new Point { X = 7, Y = 12, Value = 1 });
+            set.Add(new ValuePoint { X = 7, Y = 12, Value = 1 });
 
 
             return set;
         }
 
-        private int modifyWeightTestShema(double w0, double w1, double w2, List<Point> set)
+        private int modifyWeightTestShema(double w0, double w1, double w2, List<ValuePoint> set)
         {
             InitializeNeuronWithWeights(w0, w1, w2, set);
             var w = new double[neuron.Weights.Length];
@@ -179,7 +179,7 @@ namespace SINeuronxUnitTests
             return result;
         }
 
-        private void InitializeNeuronWithWeights(double w0, double w1, double w2, List<Point> set)
+        private void InitializeNeuronWithWeights(double w0, double w1, double w2, List<ValuePoint> set)
         {
             CreatePerceptron();
 

@@ -22,7 +22,7 @@ namespace SINeuronWPFApp.Models
         
         public bool StopConditionErrorTolerance { get; set; }
 
-        public List<Point> TrainingSet { get; set; }
+        public List<ValuePoint> TrainingSet { get; set; }
 
         public double[] Weights { get; set; }
 
@@ -36,7 +36,7 @@ namespace SINeuronWPFApp.Models
 
         public void FinalizeEpoch();
 
-        public void Initialize(List<Point> trainingSet);
+        public void Initialize(List<ValuePoint> trainingSet);
 
         public void StepLearning();
     }
