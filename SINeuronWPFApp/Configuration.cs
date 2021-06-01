@@ -11,6 +11,8 @@ namespace SINeuronWPFApp
     {
         public static double PointSize = 20;
 
+        public static double PointOffset = 10;
+
         public static Brush PointBorderBrush = Brushes.Black;
 
         public static Brush PointBackgroundBrush = Brushes.Gray;

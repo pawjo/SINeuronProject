@@ -1,4 +1,5 @@
 ﻿using SINeuronWPFApp.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -53,13 +54,16 @@ namespace SINeuronWPFApp.ViewModels
         //    var uiPoint = createUIPoint(p);
         //    UIPoints.Add(uiPoint);
         //}
+        public void MoveElement(UIElement element, double dx, double dy)
+        {
+            Canvas.SetLeft(element, Canvas.GetLeft(element) + dx);
+            Canvas.SetTop(element, Canvas.GetTop(element) + dy);
+        }
 
         private UIPoint createUIPoint(ValuePoint point)
         {
             var border = new Border();
-            double offset = Configuration.PointSize / 2;
-            Canvas.SetLeft(border, point.X - offset);
-            Canvas.SetBottom(border, point.Y - offset);
+            SetBorderCanvasPosition(border, point.X, SpaceCanvas.Height - point.Y);
             border.Width = Configuration.PointSize;
             border.Height = Configuration.PointSize;
             border.BorderBrush = Configuration.PointBorderBrush;
@@ -86,6 +90,7 @@ namespace SINeuronWPFApp.ViewModels
 
         protected bool isDragging;
         private Point clickPosition;
+        private Point beforeMouseMove;
 
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -99,10 +104,10 @@ namespace SINeuronWPFApp.ViewModels
                 var draggableControl = sender as UIElement;
                 isDragging = true;
                 clickPosition = e.GetPosition(SpaceCanvas);
+                beforeMouseMove = clickPosition;
                 draggableControl.CaptureMouse();
             }
         }
-        public int counter;
 
         private void Border_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -111,30 +116,36 @@ namespace SINeuronWPFApp.ViewModels
             draggable.ReleaseMouseCapture();
         }
 
+
         private void Border_MouseMove(object sender, MouseEventArgs e)
         {
-            var draggableControl = sender as UIElement;
-            if (isDragging && draggableControl != null)
+            var border = sender as Border;
+            if (isDragging && border != null)
             {
                 Point currentPosition = e.GetPosition(SpaceCanvas);
-                dx = currentPosition.X - clickPosition.X;
-                dy = currentPosition.Y - clickPosition.Y;
-                if (dx != 0 || dy != 0)
-                {
-                    Border_MouseLeftButtonUp(sender, null);
-                    double x = Canvas.GetLeft(draggableControl);
-                    double y = Canvas.GetBottom(draggableControl);
-                    ;
-                }
-                Canvas.SetLeft(draggableControl, Canvas.GetLeft(draggableControl) + dx);
-                Canvas.SetBottom(draggableControl, Canvas.GetBottom(draggableControl) - dy);
-                //Canvas.SetLeft(draggableControl, currentPosition.X);
-                //Canvas.SetTop(draggableControl, currentPosition.Y);
+                double dx = currentPosition.X - beforeMouseMove.X;
+                double dy = currentPosition.Y - beforeMouseMove.Y;
+                MoveElement(border, dx, dy);
+                beforeMouseMove = currentPosition;
             }
         }
+        //private void Border_MouseMove(object sender, MouseEventArgs e)
+        //{
+        //    var border = sender as Border;
+        //    if (isDragging && border != null)
+        //    {
+        //        Point currentPosition = e.GetPosition(SpaceCanvas);
+        //        SetBorderCanvasPosition(border, currentPosition.X, currentPosition.Y);
+        //    }
+        //}
 
-        public double dx;
-        public double dy;
+        private void SetBorderCanvasPosition(Border border, double x, double y)
+        {
+            double offset = Configuration.PointOffset;
+            Canvas.SetLeft(border, x - offset);
+            Canvas.SetTop(border, y - offset);
+        }
+
 
         //private UIPoint createUIPoint(Point point)
         //{

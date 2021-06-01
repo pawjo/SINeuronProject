@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SINeuronWPFApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" KeyDown="Window_KeyDown">
     <Grid>
         <Button Name="CreateNewPoint" Content="Utwórz nowy punkt" HorizontalAlignment="Left" Margin="24,10,0,0" VerticalAlignment="Top" Click="CreateNewPoint_Click"/>
         <Label Name="testLabel" Content="Label" HorizontalAlignment="Left" Margin="269,179,0,0" VerticalAlignment="Top"/>
