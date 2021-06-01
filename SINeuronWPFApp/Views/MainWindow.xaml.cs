@@ -31,17 +31,14 @@ namespace SINeuronWPFApp
 
         private void CreateNewPoint_Click(object sender, RoutedEventArgs e)
         {
-            var pointVm = new PointDialogViewModel("Stwórz nowy punkt.");
-            var window = new PointDialogWindow(pointVm);
-            window.ShowDialog();
-            if (pointVm.ChangesSubmitted)
-            {
-                vm.AddPoint(pointVm.Point);
-                var border = vm.UIPoints.Last().Border;
-                //border.MouseLeftButtonDown += new MouseButtonEventHandler(Canvas_MouseLeftButtonDown);
-                //border.MouseLeftButtonUp += new MouseButtonEventHandler(Canvas_MouseLeftButtonUp);
-                //border.MouseMove += new MouseEventHandler(Canvas_MouseMove);
-            }
+            vm.AddPoint();
+            //var pointVm = new PointDialogViewModel("Stwórz nowy punkt.");
+            //var window = new PointDialogWindow(pointVm);
+            //window.ShowDialog();
+            //if (pointVm.ChangesSubmitted)
+            //{
+            //    vm.AddPoint(pointVm.Point);
+            //}
         }
 
         private readonly MainWindowViewModel vm;
@@ -53,9 +50,9 @@ namespace SINeuronWPFApp
 
         private void Test2_click(object sender, RoutedEventArgs e)
         {
-            var testBorder = vm.UIPoints.Last().Border;
-            double x = Canvas.GetLeft(testBorder);
-            double y = Canvas.GetBottom(testBorder);
+            double x = Canvas.GetLeft(vm.UIPoints.Last().Border);
+            double y = Canvas.GetTop(vm.UIPoints.Last().Border);
+            ;
         }
 
         //protected bool isDragging;

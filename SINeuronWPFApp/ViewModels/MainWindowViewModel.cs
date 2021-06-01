@@ -23,6 +23,8 @@ namespace SINeuronWPFApp.ViewModels
 
         public Canvas SpaceCanvas { get; set; }
 
+        public bool ClickedOneTime { get; set; }
+
         //public void Refresh()
         //{
         //    if (Ellipses.Count != TrainingSet.Count)
@@ -31,12 +33,26 @@ namespace SINeuronWPFApp.ViewModels
         //    }
         //}
 
-        public void AddPoint(ValuePoint p)
+
+        public void AddPoint()
         {
-            TrainingSet.Add(p);
-            var uiPoint = createUIPoint(p);
-            UIPoints.Add(uiPoint);
+            var pointVm = new PointDialogViewModel("Stwórz nowy punkt.");
+            var window = new PointDialogWindow(pointVm);
+            window.ShowDialog();
+            if (pointVm.ChangesSubmitted)
+            {
+                var point = pointVm.Point;
+                TrainingSet.Add(point);
+                var uiPoint = createUIPoint(point);
+                UIPoints.Add(uiPoint);
+            }
         }
+        //public void AddPoint(ValuePoint p)
+        //{
+        //    TrainingSet.Add(p);
+        //    var uiPoint = createUIPoint(p);
+        //    UIPoints.Add(uiPoint);
+        //}
 
         private UIPoint createUIPoint(ValuePoint point)
         {
@@ -46,7 +62,8 @@ namespace SINeuronWPFApp.ViewModels
             Canvas.SetBottom(border, point.Y - offset);
             border.Width = Configuration.PointSize;
             border.Height = Configuration.PointSize;
-            border.BorderBrush = Configuration.PointBrush;
+            border.BorderBrush = Configuration.PointBorderBrush;
+            border.Background = Configuration.PointBackgroundBrush;
             border.BorderThickness = new Thickness(1);
             border.CornerRadius = new CornerRadius(60);
             border.MouseLeftButtonDown += new MouseButtonEventHandler(Border_MouseLeftButtonDown);
@@ -73,11 +90,19 @@ namespace SINeuronWPFApp.ViewModels
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var draggableControl = sender as UIElement;
-            isDragging = true;
-            clickPosition = e.GetPosition(SpaceCanvas);
-            draggableControl.CaptureMouse();
+            if (e.ClickCount == 2)
+            {
+
+            }
+            else
+            {
+                var draggableControl = sender as UIElement;
+                isDragging = true;
+                clickPosition = e.GetPosition(SpaceCanvas);
+                draggableControl.CaptureMouse();
+            }
         }
+        public int counter;
 
         private void Border_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -92,10 +117,24 @@ namespace SINeuronWPFApp.ViewModels
             if (isDragging && draggableControl != null)
             {
                 Point currentPosition = e.GetPosition(SpaceCanvas);
-                Canvas.SetLeft(draggableControl, currentPosition.X);
-                Canvas.SetTop(draggableControl, currentPosition.Y);
+                dx = currentPosition.X - clickPosition.X;
+                dy = currentPosition.Y - clickPosition.Y;
+                if (dx != 0 || dy != 0)
+                {
+                    Border_MouseLeftButtonUp(sender, null);
+                    double x = Canvas.GetLeft(draggableControl);
+                    double y = Canvas.GetBottom(draggableControl);
+                    ;
+                }
+                Canvas.SetLeft(draggableControl, Canvas.GetLeft(draggableControl) + dx);
+                Canvas.SetBottom(draggableControl, Canvas.GetBottom(draggableControl) - dy);
+                //Canvas.SetLeft(draggableControl, currentPosition.X);
+                //Canvas.SetTop(draggableControl, currentPosition.Y);
             }
         }
+
+        public double dx;
+        public double dy;
 
         //private UIPoint createUIPoint(Point point)
         //{
@@ -127,9 +166,5 @@ namespace SINeuronWPFApp.ViewModels
         //        Label = label
         //    };
         //}
-
-        public void Move(Ellipse e)
-        {
-        }
     }
 }
