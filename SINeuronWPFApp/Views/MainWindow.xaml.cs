@@ -49,6 +49,14 @@ namespace SINeuronWPFApp
             ;
         }
 
+        private void DeletePoint_Click(object sender, RoutedEventArgs e)
+        {
+            if (vm.ActiveBorder != null)
+                vm.DeletePoint(vm.ActiveBorder);
+        }
+
+
+
         //private void Window_KeyDown(object sender, KeyEventArgs e)
         //{
         //    var element = vm.UIPoints.Last().Border;

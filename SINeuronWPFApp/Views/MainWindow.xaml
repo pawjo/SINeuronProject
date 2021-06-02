@@ -6,10 +6,12 @@
         xmlns:local="clr-namespace:SINeuronWPFApp"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Button Name="CreateNewPoint" Content="Utwórz nowy punkt" HorizontalAlignment="Left" Margin="24,10,0,0" VerticalAlignment="Top" Click="CreateNewPoint_Click"/>
-        <Label Name="testLabel" Content="Label" HorizontalAlignment="Left" Margin="269,179,0,0" VerticalAlignment="Top"/>
-        <Button Content="Test" Canvas.Left="288" Canvas.Top="30" Click="Test_click" Margin="429,20,300,357"/>
+    <Grid Margin="0,12,0,-12">
+        <StackPanel Orientation="Horizontal">
+            <Button Name="CreateNewPoint" Content="Utwórz nowy punkt" HorizontalAlignment="Left" VerticalAlignment="Top" Click="CreateNewPoint_Click"/>
+            <Button Name="DeletePoint" Content="Usuń punkt" HorizontalAlignment="Left" VerticalAlignment="Top" Click="DeletePoint_Click"/>
+        </StackPanel>
+        <!--<Button Content="Test" Canvas.Left="288" Canvas.Top="30" Click="Test_click" Margin="429,20,300,357"/>-->
 
 
         <Canvas Name="SpaceCanvas" Background="AliceBlue" Height="200" Width="500">

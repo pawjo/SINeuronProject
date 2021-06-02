@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SINeuronWPFApp"
         mc:Ignorable="d"
-        Title="{Binding Text}" Height="200" Width="250">
+        Title="{Binding Text}" Height="200" Width="250" KeyDown="Window_KeyDown">
     <StackPanel Orientation="Vertical">
         <Label Content="{Binding Text}" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

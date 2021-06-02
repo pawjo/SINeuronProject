@@ -26,19 +26,13 @@ namespace SINeuronWPFApp
             DataContext = vm = _vm;
             InitializeComponent();
         }
-
-        private void SubmitButton_Click(object sender, RoutedEventArgs e)
-        {
-            vm.ChangesSubmitted = true;
-            this.Close();
-        }
-
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
         
+        private readonly PointDialogViewModel vm;
+        
+        private void cancel() => this.Close();
 
+        private void CancelButton_Click(object sender, RoutedEventArgs e) => cancel();
+        
         private void RB_1_Checked(object sender, RoutedEventArgs e)
         {
             vm.Point.Value = 1;
@@ -48,7 +42,26 @@ namespace SINeuronWPFApp
         {
             vm.Point.Value = -1;
         }
-        
-        private readonly PointDialogViewModel vm;
+
+        private void submit()
+        {
+            vm.ChangesSubmitted = true;
+            this.Close();
+        }
+
+        private void SubmitButton_Click(object sender, RoutedEventArgs e) => submit();
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch(e.Key)
+            {
+                case Key.Enter:
+                    submit();
+                    break;
+                case Key.Escape:
+                    cancel();
+                    break;
+            }
+        }
     }
 }
