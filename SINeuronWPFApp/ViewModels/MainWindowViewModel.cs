@@ -17,6 +17,8 @@ namespace SINeuronWPFApp.ViewModels
             SpaceCanvas = spaceCanvas;
             TrainingSet = trainingSet;
         }
+        
+        public bool IsSynchronized { get; set; }
 
         public List<UIPoint> UIPoints { get; set; }
 
@@ -24,7 +26,7 @@ namespace SINeuronWPFApp.ViewModels
 
         public Canvas SpaceCanvas { get; set; }
 
-        public bool ClickedOneTime { get; set; }
+
 
         //public void Refresh()
         //{
@@ -37,27 +39,73 @@ namespace SINeuronWPFApp.ViewModels
 
         public void AddPoint()
         {
-            var pointVm = new PointDialogViewModel("Stwórz nowy punkt.");
-            var window = new PointDialogWindow(pointVm);
-            window.ShowDialog();
-            if (pointVm.ChangesSubmitted)
+            var point = OpenPointDialogWindow("Dodaj nowy punkt.");
+            if (point != null)
             {
-                var point = pointVm.Point;
                 TrainingSet.Add(point);
                 var uiPoint = createUIPoint(point);
                 UIPoints.Add(uiPoint);
             }
         }
+        
+        public void EditPoint(Border border)
+        {
+            var oldPoint = createValuePoint(border);
+            if (oldPoint == null)
+                return;
+            var point = OpenPointDialogWindow("Edytuj punkt.", oldPoint);
+            if (point != null)
+            {
+                if (oldPoint.X != point.X || oldPoint.Y != point.Y)
+                    SetBorderCanvasPosition(border, point.X, SpaceCanvas.Height - point.Y);
+                if (oldPoint.Value != point.Value)
+                {
+                    var textBlock = border.Child as TextBlock;
+                    if (textBlock != null)
+                        textBlock.Text = point.Value.ToString();
+                }
+            }
+        }
+
+
         //public void AddPoint(ValuePoint p)
         //{
         //    TrainingSet.Add(p);
         //    var uiPoint = createUIPoint(p);
         //    UIPoints.Add(uiPoint);
         //}
+
+
         public void MoveElement(UIElement element, double dx, double dy)
         {
             Canvas.SetLeft(element, Canvas.GetLeft(element) + dx);
             Canvas.SetTop(element, Canvas.GetTop(element) + dy);
+        }
+
+        public void Synchronize()
+        {
+            TrainingSet.Clear();
+            foreach (var item in UIPoints)
+            {
+                TrainingSet.Add(createValuePoint(item.Border));
+            }
+            IsSynchronized = true;
+        }
+
+        private ValuePoint createValuePoint(Border border)
+        {
+            double x = Canvas.GetLeft(border) + Configuration.PointOffset;
+            double y = SpaceCanvas.Height - Canvas.GetTop(border) - Configuration.PointOffset;
+            var textBlock = border.Child as TextBlock;
+            if (textBlock != null)
+                return new ValuePoint
+                {
+                    X = x,
+                    Y = y,
+                    Value = textBlock.Text == "1" ? 1 : -1
+                };
+            else 
+                return null;
         }
 
         private UIPoint createUIPoint(ValuePoint point)
@@ -88,8 +136,7 @@ namespace SINeuronWPFApp.ViewModels
         }
 
 
-        protected bool isDragging;
-        private Point clickPosition;
+        private bool isDragging;
         private Point beforeMouseMove;
 
 
@@ -97,14 +144,13 @@ namespace SINeuronWPFApp.ViewModels
         {
             if (e.ClickCount == 2)
             {
-
+                EditPoint(sender as Border);
             }
-            else
+            else if(e.ClickCount == 1)
             {
                 var draggableControl = sender as UIElement;
                 isDragging = true;
-                clickPosition = e.GetPosition(SpaceCanvas);
-                beforeMouseMove = clickPosition;
+                beforeMouseMove = e.GetPosition(SpaceCanvas);
                 draggableControl.CaptureMouse();
             }
         }
@@ -122,6 +168,7 @@ namespace SINeuronWPFApp.ViewModels
             var border = sender as Border;
             if (isDragging && border != null)
             {
+                IsSynchronized = false;
                 Point currentPosition = e.GetPosition(SpaceCanvas);
                 double dx = currentPosition.X - beforeMouseMove.X;
                 double dy = currentPosition.Y - beforeMouseMove.Y;
@@ -138,6 +185,18 @@ namespace SINeuronWPFApp.ViewModels
         //        SetBorderCanvasPosition(border, currentPosition.X, currentPosition.Y);
         //    }
         //}
+
+
+        private ValuePoint OpenPointDialogWindow(string text, ValuePoint point = null)
+        {
+            var pointVm = new PointDialogViewModel(text, point);
+            var window = new PointDialogWindow(pointVm);
+            window.ShowDialog();
+            if (pointVm.ChangesSubmitted)
+                return pointVm.Point;
+            else
+                return null;
+        }
 
         private void SetBorderCanvasPosition(Border border, double x, double y)
         {

@@ -45,32 +45,29 @@ namespace SINeuronWPFApp
 
         private void Test_click(object sender, RoutedEventArgs e)
         {
-            vm.TrainingSet.Add(new ValuePoint { X = 10, Y = 20 });
+            vm.Synchronize();
+            ;
         }
 
-        private void Test2_click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void Window_KeyDown(object sender, KeyEventArgs e)
-        {
-            var element = vm.UIPoints.Last().Border;
-            switch (e.Key)
-            {
-                case Key.Left:
-                    vm.MoveElement(element, -20, 0);
-                    break;
-                case Key.Right:
-                    vm.MoveElement(element, 20, 0);
-                    break;
-                case Key.Up:
-                    vm.MoveElement(element, 0, 20);
-                    break;
-                case Key.Down:
-                    vm.MoveElement(element, 0, -20);
-                    break;
-            }
-        }
+        //private void Window_KeyDown(object sender, KeyEventArgs e)
+        //{
+        //    var element = vm.UIPoints.Last().Border;
+        //    switch (e.Key)
+        //    {
+        //        case Key.Left:
+        //            vm.MoveElement(element, -20, 0);
+        //            break;
+        //        case Key.Right:
+        //            vm.MoveElement(element, 20, 0);
+        //            break;
+        //        case Key.Up:
+        //            vm.MoveElement(element, 0, 20);
+        //            break;
+        //        case Key.Down:
+        //            vm.MoveElement(element, 0, -20);
+        //            break;
+        //    }
+        //}
 
         //protected bool isDragging;
         //private Point clickPosition;

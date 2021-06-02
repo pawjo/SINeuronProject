@@ -5,12 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SINeuronWPFApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" KeyDown="Window_KeyDown">
+        Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Button Name="CreateNewPoint" Content="Utwórz nowy punkt" HorizontalAlignment="Left" Margin="24,10,0,0" VerticalAlignment="Top" Click="CreateNewPoint_Click"/>
         <Label Name="testLabel" Content="Label" HorizontalAlignment="Left" Margin="269,179,0,0" VerticalAlignment="Top"/>
         <Button Content="Test" Canvas.Left="288" Canvas.Top="30" Click="Test_click" Margin="429,20,300,357"/>
-        <Button Content="TestMove" Canvas.Left="288" Canvas.Top="30" Click="Test2_click" Margin="532,20,197,357"/>
 
 
         <Canvas Name="SpaceCanvas" Background="AliceBlue" Height="200" Width="500">
