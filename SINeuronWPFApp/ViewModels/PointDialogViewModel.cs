@@ -21,14 +21,17 @@ namespace SINeuronWPFApp.ViewModels
         {
             ChangesSubmitted = false;
             if (point != null)
-                Point = point;
+                Point = new ValuePoint
+                {
+                    X = point.X,
+                    Y = point.Y,
+                    Value = point.Value
+                };
             else
-            {
                 Point = new ValuePoint
                 {
                     Value = 1
                 };
-            }
             Text = text;
         }
 
