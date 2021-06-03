@@ -28,7 +28,8 @@ namespace SINeuronWPFApp
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = vm = new MainWindowViewModel(new List<ValuePoint>(), SpaceCanvas);
+            //DataContext = vm = new MainWindowViewModel(new List<ValuePoint>(), SpaceCanvas);
+            DataContext = vm = new MainWindowViewModel(SpaceCanvas);
             neuronButtons = new List<Button>();
             //neuronButtons.Add(InitializeLearningButton);
             neuronButtons.Add(StepLearningButton);
@@ -36,6 +37,8 @@ namespace SINeuronWPFApp
             neuronButtons.Add(AutoLearningButton);
             disableNeuronButtons();
         }
+        
+
 
         private void CreateNewPoint_Click(object sender, RoutedEventArgs e)
         {
@@ -86,23 +89,33 @@ namespace SINeuronWPFApp
 
         private void InitializeLearning_Click(object sender, RoutedEventArgs e)
         {
+            LearningCompletedLabel.Visibility = Visibility.Hidden;
             if (vm.InitializeNeuron())
                 enableNeuronButtons();
         }
 
         private void StepLearning_Click(object sender, RoutedEventArgs e)
         {
-
+            vm.Neuron.StepLearning();
+            vm.WeightsPropertyChanged();
         }
 
         private void EpochLearning_Click(object sender, RoutedEventArgs e)
         {
-
+            if (vm.Neuron.EpochLearning() && vm.Neuron.CompletedLearning)
+            {
+                LearningCompletedLabel.Visibility = Visibility.Visible;
+            }
+            vm.WeightsPropertyChanged();
         }
 
         private void AutoLearning_Click(object sender, RoutedEventArgs e)
         {
-
+            if (vm.Neuron.AutoLearning())
+            {
+                LearningCompletedLabel.Visibility = Visibility.Visible;
+            }
+            vm.WeightsPropertyChanged();
         }
 
 

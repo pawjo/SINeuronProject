@@ -36,6 +36,8 @@ namespace SINeuronWPFApp.Models
         // zwracana jest wartosc false.
         public bool AutoLearning()
         {
+            IterationCount = 0;
+
             while(!CompletedLearning)
             {
                 if (!EpochLearning())
@@ -97,7 +99,7 @@ namespace SINeuronWPFApp.Models
                 Weights = new double[3];
 
             for (int i = 0; i < Weights.Length; i++)
-                Weights[i] = random.Next() + random.NextDouble();
+                Weights[i] = random.Next(-300, 300) + random.NextDouble();
         }
 
         // Wykonuje jeden krok uczenia dla jednego obiektu.

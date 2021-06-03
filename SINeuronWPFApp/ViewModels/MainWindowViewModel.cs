@@ -15,7 +15,27 @@ namespace SINeuronWPFApp.ViewModels
 
         public bool IsSynchronized { get; set; }
 
-        public Rectangle Line { get; set; }
+        public double LineAngle 
+        { 
+            get
+            {
+                if (Neuron.Weights != null)
+                    return Math.Atan(Neuron.Weights[1] / Neuron.Weights[2]);
+                else
+                    return 0;
+            }
+        }
+
+        public double LineY
+        {
+            get
+            {
+                if (Neuron.Weights != null)
+                    return -Neuron.Weights[0] / Neuron.Weights[2];
+                else
+                    return 0;
+            }
+        }
 
         public INeuron Neuron { get; set; }
 
@@ -25,21 +45,45 @@ namespace SINeuronWPFApp.ViewModels
 
         public Canvas SpaceCanvas { get; set; }
 
-        public double Weight0 { get => Neuron.Weights[0]; }
+        public double Weight0 { get => getWeight(0); }
 
-        public double Weight1 { get => Neuron.Weights[1]; }
+        public double Weight1 { get => getWeight(1); }
 
-        public double Weight2 { get => Neuron.Weights[2]; }
+        public double Weight2 { get => getWeight(2); }
 
-        public MainWindowViewModel(List<ValuePoint> trainingSet, Canvas spaceCanvas)
+        
+
+        public MainWindowViewModel(Canvas spaceCanvas)
         {
             createPerceptron();
             SpaceCanvas = spaceCanvas;
             SpaceCanvas.MouseLeftButtonDown += new MouseButtonEventHandler(SpaceCanvas_MouseDown);
-            TrainingSet = trainingSet;
+            TrainingSet = new List<ValuePoint>();
             UIPoints = new List<UIPoint>();
+            CreateExampleSet2();
         }
 
+        private void CreateExampleSet2()
+        {
+            createPoint(new ValuePoint { X = -80, Y = 30, Value = 1 });
+            createPoint(new ValuePoint { X = -90, Y = 50, Value = 1 });
+            createPoint(new ValuePoint { X = -50, Y = 0, Value = 1 });
+            createPoint(new ValuePoint { X = -60, Y = 10, Value = 1 });
+            createPoint(new ValuePoint { X = 50, Y = -50, Value = 1 });
+            
+            createPoint(new ValuePoint { X = 20, Y = 80, Value = -1 });
+            createPoint(new ValuePoint { X = 50, Y = 120, Value = -1 });
+            createPoint(new ValuePoint { X = 50, Y = 60, Value = -1 });
+            createPoint(new ValuePoint { X = 10, Y = 20, Value = -1 });
+            createPoint(new ValuePoint { X = 60, Y = 140, Value = -1 });
+        }
+
+        private void createPoint (ValuePoint point)
+        {
+            TrainingSet.Add(point);
+            var uiPoint = createUIPoint(point);
+            UIPoints.Add(uiPoint);
+        }
 
         public void AddPoint()
         {
@@ -93,8 +137,21 @@ namespace SINeuronWPFApp.ViewModels
                 Synchronize();
 
             Neuron.Initialize(TrainingSet);
-            onPropertyChanged(nameof(Weight0));
+            //Neuron.Weights[0] = -304;
+            //Neuron.Weights[1] = 40;
+            //Neuron.Weights[2] = 23;
+
+            WeightsPropertyChanged();
             return true;
+        }
+
+        public void WeightsPropertyChanged()
+        {
+            onPropertyChanged(nameof(Weight0));
+            onPropertyChanged(nameof(Weight1));
+            onPropertyChanged(nameof(Weight2));
+            onPropertyChanged(nameof(LineAngle));
+            onPropertyChanged(nameof(LineY));
         }
 
         public void MoveElement(UIElement element, double dx, double dy)
@@ -168,7 +225,7 @@ namespace SINeuronWPFApp.ViewModels
             Neuron = new Perceptron
             {
                 ErrorTolerance = 0.5,
-                IterationMax = 100,
+                IterationMax = 1000,
                 LearningRate = 0.5,
                 StopConditionErrorTolerance = true,
             };
@@ -225,6 +282,13 @@ namespace SINeuronWPFApp.ViewModels
                 ActiveBorder.Background = Configuration.PointBackgroundBrush;
                 ActiveBorder = null;
             }
+        }
+
+        private double getWeight(int i)
+        {
+            if (Neuron.Weights != null)
+                return Neuron.Weights[i];
+            else return 0;
         }
 
         private ValuePoint OpenPointDialogWindow(string text, ValuePoint point = null)
