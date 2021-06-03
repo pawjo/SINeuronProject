@@ -23,10 +23,18 @@ namespace SINeuronWPFApp
     /// </summary>
     public partial class MainWindow : Window
     {
+        private List<Button> neuronButtons { get; set; }
+        
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = vm = new MainWindowViewModel(new List<Models.ValuePoint>(), SpaceCanvas);
+            DataContext = vm = new MainWindowViewModel(new List<ValuePoint>(), SpaceCanvas);
+            neuronButtons = new List<Button>();
+            //neuronButtons.Add(InitializeLearningButton);
+            neuronButtons.Add(StepLearningButton);
+            neuronButtons.Add(EpochLearningButton);
+            neuronButtons.Add(AutoLearningButton);
+            disableNeuronButtons();
         }
 
         private void CreateNewPoint_Click(object sender, RoutedEventArgs e)
@@ -54,6 +62,49 @@ namespace SINeuronWPFApp
             if (vm.ActiveBorder != null)
                 vm.DeletePoint(vm.ActiveBorder);
         }
+        private void disableNeuronButtons()
+        {
+            foreach (var item in neuronButtons)
+            {
+                item.IsEnabled = false;
+            }
+        }
+        
+        private void EditPoint_Click(object sender, RoutedEventArgs e)
+        {
+            if (vm.ActiveBorder != null)
+                vm.EditPoint(vm.ActiveBorder);
+        }
+
+        private void enableNeuronButtons()
+        {
+            foreach (var item in neuronButtons)
+            {
+                item.IsEnabled = true;
+            }
+        }
+
+        private void InitializeLearning_Click(object sender, RoutedEventArgs e)
+        {
+            if (vm.InitializeNeuron())
+                enableNeuronButtons();
+        }
+
+        private void StepLearning_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void EpochLearning_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void AutoLearning_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
 
 
 

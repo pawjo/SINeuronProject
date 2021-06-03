@@ -15,14 +15,25 @@ namespace SINeuronWPFApp.ViewModels
 
         public bool IsSynchronized { get; set; }
 
+        public Rectangle Line { get; set; }
+
+        public INeuron Neuron { get; set; }
+
         public List<UIPoint> UIPoints { get; set; }
 
         public List<ValuePoint> TrainingSet { get; set; }
 
         public Canvas SpaceCanvas { get; set; }
 
+        public double Weight0 { get => Neuron.Weights[0]; }
+
+        public double Weight1 { get => Neuron.Weights[1]; }
+
+        public double Weight2 { get => Neuron.Weights[2]; }
+
         public MainWindowViewModel(List<ValuePoint> trainingSet, Canvas spaceCanvas)
         {
+            createPerceptron();
             SpaceCanvas = spaceCanvas;
             SpaceCanvas.MouseLeftButtonDown += new MouseButtonEventHandler(SpaceCanvas_MouseDown);
             TrainingSet = trainingSet;
@@ -72,6 +83,18 @@ namespace SINeuronWPFApp.ViewModels
                         textBlock.Text = point.Value.ToString();
                 }
             }
+        }
+
+        public bool InitializeNeuron()
+        {
+            if (UIPoints.Count < 2)
+                return false;
+            if (!IsSynchronized)
+                Synchronize();
+
+            Neuron.Initialize(TrainingSet);
+            onPropertyChanged(nameof(Weight0));
+            return true;
         }
 
         public void MoveElement(UIElement element, double dx, double dy)
@@ -138,6 +161,17 @@ namespace SINeuronWPFApp.ViewModels
                 MoveElement(border, dx, dy);
                 beforeMouseMove = currentPosition;
             }
+        }
+
+        private void createPerceptron()
+        {
+            Neuron = new Perceptron
+            {
+                ErrorTolerance = 0.5,
+                IterationMax = 100,
+                LearningRate = 0.5,
+                StopConditionErrorTolerance = true,
+            };
         }
 
         private UIPoint createUIPoint(ValuePoint point)

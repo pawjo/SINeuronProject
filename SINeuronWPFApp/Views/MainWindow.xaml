@@ -7,9 +7,14 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid Margin="0,12,0,-12">
-        <StackPanel Orientation="Horizontal">
-            <Button Name="CreateNewPoint" Content="Utwórz nowy punkt" HorizontalAlignment="Left" VerticalAlignment="Top" Click="CreateNewPoint_Click"/>
-            <Button Name="DeletePoint" Content="Usuń punkt" HorizontalAlignment="Left" VerticalAlignment="Top" Click="DeletePoint_Click"/>
+        <StackPanel Orientation="Horizontal" Height="25" Margin="10,29,-10,380">
+            <Button x:Name="CreateNewPointButton" Content="Utwórz nowy punkt" Click="CreateNewPoint_Click"/>
+            <Button x:Name="EditPointButton" Content="Edytuj punkt" Click="EditPoint_Click"/>
+            <Button x:Name="DeletePointButton" Content="Usuń punkt" Click="DeletePoint_Click"/>
+            <Button x:Name="InitializeLearningButton" Content="Inicjalizuj neuron" Click="InitializeLearning_Click"/>
+            <Button x:Name="StepLearningButton" Content="Krok uczenia"             Click="StepLearning_Click"/>
+            <Button x:Name="EpochLearningButton" Content="Epoka uczenia"           Click="EpochLearning_Click"/>
+            <Button x:Name="AutoLearningButton" Content="Uczenie automatyczne"     Click="AutoLearning_Click"/>
         </StackPanel>
         <!--<Button Content="Test" Canvas.Left="288" Canvas.Top="30" Click="Test_click" Margin="429,20,300,357"/>-->
 
@@ -25,5 +30,26 @@
                 <TextBlock HorizontalAlignment="Center" Text="-1" />
             </Border>-->
         </Canvas>
+
+        <StackPanel Orientation="Vertical" Width="100" Height="300" Margin="10,76,690,58">
+            <Grid Background="Beige" ShowGridLines="True">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Label Name="w0Label"       Grid.Column="0" Grid.Row="0" Content="w0" />
+                <Label Name="w0ValueLabel"  Grid.Column="1" Grid.Row="0" Content="{Binding vm.Weight0, Mode=OneWay}"/>
+                <Label Name="w1Label"       Grid.Column="0" Grid.Row="1" Content="w1"/>
+                <Label Name="w1ValueLabel"  Grid.Column="1" Grid.Row="1" Content="{Binding vm.Weight1, Mode=OneWay}"/>
+                <Label Name="w2Label"       Grid.Column="0" Grid.Row="2" Content="w2"/>
+                <Label Name="w2ValueLabel"  Grid.Column="1" Grid.Row="2" Content="{Binding vm.Weight2, Mode=OneWay}"/>
+            </Grid>
+
+        </StackPanel>
     </Grid>
 </Window>
