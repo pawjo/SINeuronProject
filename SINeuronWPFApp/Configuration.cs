@@ -20,5 +20,16 @@ namespace SINeuronWPFApp
         public static Brush ActivePointBorderBrush = Brushes.DarkGray;
 
         public static Brush ActivePointBackgroundBrush = Brushes.Blue;
+
+        public static Brush AxesBrush = Brushes.Red;
+
+        public static double SpaceCanvasWidth = 700;
+
+        public static double SpaceCanvasHeight = 400;
+
+        public static double SpaceCanvasXOffset = 350;
+
+        public static double SpaceCanvasYOffset = 200;
+
     }
 }

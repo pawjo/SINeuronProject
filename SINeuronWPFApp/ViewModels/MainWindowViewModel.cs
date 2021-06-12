@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace SINeuronWPFApp.ViewModels
@@ -15,8 +16,8 @@ namespace SINeuronWPFApp.ViewModels
 
         public bool IsSynchronized { get; set; }
 
-        public double LineAngle 
-        { 
+        public double LineAngle
+        {
             get
             {
                 if (Neuron.Weights != null)
@@ -33,10 +34,10 @@ namespace SINeuronWPFApp.ViewModels
         {
             get
             {
+                double result = Configuration.SpaceCanvasYOffset;
                 if (Neuron.Weights != null)
-                    return -Neuron.Weights[0] / Neuron.Weights[2];
-                else
-                    return 0;
+                    result -= Neuron.Weights[0] / Neuron.Weights[2];
+                return result;
             }
         }
 
@@ -54,7 +55,7 @@ namespace SINeuronWPFApp.ViewModels
 
         public double Weight2 { get => getWeight(2); }
 
-        
+
 
         public MainWindowViewModel(Canvas spaceCanvas)
         {
@@ -63,6 +64,7 @@ namespace SINeuronWPFApp.ViewModels
             SpaceCanvas.MouseLeftButtonDown += new MouseButtonEventHandler(SpaceCanvas_MouseDown);
             TrainingSet = new List<ValuePoint>();
             UIPoints = new List<UIPoint>();
+            createAxesLabels();
             CreateExampleSet2();
         }
 
@@ -73,7 +75,7 @@ namespace SINeuronWPFApp.ViewModels
             createPoint(new ValuePoint { X = -50, Y = 0, Value = 1 });
             createPoint(new ValuePoint { X = -60, Y = 10, Value = 1 });
             createPoint(new ValuePoint { X = 50, Y = -50, Value = 1 });
-            
+
             createPoint(new ValuePoint { X = 20, Y = 80, Value = -1 });
             createPoint(new ValuePoint { X = 50, Y = 120, Value = -1 });
             createPoint(new ValuePoint { X = 50, Y = 60, Value = -1 });
@@ -81,7 +83,7 @@ namespace SINeuronWPFApp.ViewModels
             createPoint(new ValuePoint { X = 60, Y = 140, Value = -1 });
         }
 
-        private void createPoint (ValuePoint point)
+        private void createPoint(ValuePoint point)
         {
             TrainingSet.Add(point);
             var uiPoint = createUIPoint(point);
@@ -103,7 +105,7 @@ namespace SINeuronWPFApp.ViewModels
         {
             for (int i = 0; i < UIPoints.Count; i++)
             {
-                if(UIPoints[i].Border==border)
+                if (UIPoints[i].Border == border)
                 {
                     SpaceCanvas.Children.Remove(border);
                     UIPoints.RemoveAt(i);
@@ -140,9 +142,9 @@ namespace SINeuronWPFApp.ViewModels
                 Synchronize();
 
             Neuron.Initialize(TrainingSet);
-            //Neuron.Weights[0] = -304;
-            //Neuron.Weights[1] = 40;
-            //Neuron.Weights[2] = 23;
+            Neuron.Weights[0] = -304;
+            Neuron.Weights[1] = 40;
+            Neuron.Weights[2] = 23;
 
             WeightsPropertyChanged();
             return true;
@@ -184,7 +186,7 @@ namespace SINeuronWPFApp.ViewModels
             border.BorderBrush = Configuration.ActivePointBorderBrush;
             border.Background = Configuration.ActivePointBackgroundBrush;
         }
-        
+
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2)
@@ -220,6 +222,103 @@ namespace SINeuronWPFApp.ViewModels
                 double dy = currentPosition.Y - beforeMouseMove.Y;
                 MoveElement(border, dx, dy);
                 beforeMouseMove = currentPosition;
+            }
+        }
+
+        public void createAxesLabels()
+        {
+            var zeroLabel = new Label
+            {
+                Content = 0
+            };
+            SpaceCanvas.Children.Add(zeroLabel);
+            Canvas.SetLeft(zeroLabel, Configuration.SpaceCanvasXOffset - 15);
+            Canvas.SetTop(zeroLabel, Configuration.SpaceCanvasYOffset + 12);
+
+            for (int i = -(int)Configuration.SpaceCanvasXOffset; i < Configuration.SpaceCanvasWidth; i += 50)
+                createXLabel(i);
+
+            for (int i = -(int)Configuration.SpaceCanvasYOffset; i < Configuration.SpaceCanvasHeight; i += 50)
+                createYLabel(i);
+        }
+
+        private void createXLabel(int val)
+        {
+            if (val != 0)
+            {
+                string stringVal = val.ToString();
+
+                var sp = new StackPanel
+                {
+                    Orientation = Orientation.Vertical
+                };
+
+                var rect = new Rectangle
+                {
+                    Fill = Configuration.AxesBrush,
+                    Width = 2,
+                    Height = 20
+                };
+                sp.Children.Add(rect);
+
+                var label = new Label
+                {
+                    Content = stringVal
+                };
+                sp.Children.Add(label);
+
+                //int digitCount = 0;
+                //if (val >= 1000)
+                //    digitCount = 3;
+                //else if (val >= 100)
+                //    digitCount = 2;
+                //else if (val >= 10)
+                //    digitCount = 1;
+
+                SpaceCanvas.Children.Add(sp);
+                //Canvas.SetLeft(sp, Configuration.SpaceCanvasXOffset - 7 - 3.5 * digitCount + val);
+                Canvas.SetLeft(sp, Configuration.SpaceCanvasXOffset - 3.5 - 3.5 * stringVal.Length + val);
+                Canvas.SetTop(sp, Configuration.SpaceCanvasYOffset - 8);
+            }
+        }
+
+        private void createYLabel(int val)
+        {
+            if (val != 0)
+            {
+                string stringVal = val.ToString();
+
+                var sp = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal
+                };
+
+                var label = new Label
+                {
+                    Content = stringVal
+                };
+                sp.Children.Add(label);
+
+                var rect = new Rectangle
+                {
+                    Fill = Configuration.AxesBrush,
+                    Width = 20,
+                    Height = 2
+                };
+                sp.Children.Add(rect);
+
+                //int digitCount = 0;
+                //if (val >= 1000)
+                //    digitCount = 3;
+                //else if (val >= 100)
+                //    digitCount = 2;
+                //else if (val >= 10)
+                //    digitCount = 1;
+
+                SpaceCanvas.Children.Add(sp);
+                //Canvas.SetLeft(sp, Configuration.SpaceCanvasXOffset - 26 - 6 * digitCount);
+                Canvas.SetLeft(sp, Configuration.SpaceCanvasXOffset - 20 - 6 * stringVal.Length);
+                Canvas.SetTop(sp, Configuration.SpaceCanvasYOffset - 12 - val);
             }
         }
 
@@ -263,8 +362,8 @@ namespace SINeuronWPFApp.ViewModels
 
         private ValuePoint createValuePoint(Border border)
         {
-            double x = Canvas.GetLeft(border) + Configuration.PointOffset;
-            double y = SpaceCanvas.Height - Canvas.GetTop(border) - Configuration.PointOffset;
+            double x = Canvas.GetLeft(border) - Configuration.SpaceCanvasXOffset + Configuration.PointOffset;
+            double y = SpaceCanvas.Height - Canvas.GetTop(border) - Configuration.SpaceCanvasYOffset - Configuration.PointOffset;
             var textBlock = border.Child as TextBlock;
             if (textBlock != null)
                 return new ValuePoint
@@ -308,8 +407,8 @@ namespace SINeuronWPFApp.ViewModels
         private void SetBorderCanvasPosition(Border border, double x, double y)
         {
             double offset = Configuration.PointOffset;
-            Canvas.SetLeft(border, x - offset);
-            Canvas.SetTop(border, y - offset);
+            Canvas.SetLeft(border, x - offset + Configuration.SpaceCanvasXOffset);
+            Canvas.SetTop(border, y - offset - Configuration.SpaceCanvasYOffset);
         }
 
         private void SpaceCanvas_MouseDown(object sender, MouseButtonEventArgs e)

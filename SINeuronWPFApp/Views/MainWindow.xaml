@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SINeuronWPFApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Width="800" Height="425">
     <!--<Grid Margin="0,12,0,-12">-->
-    <Grid>
+    <DockPanel>
         <!--<StackPanel Orientation="Horizontal" Height="25" Margin="10,10,-10,399">-->
-        <StackPanel Orientation="Horizontal" Height="25" Margin="10,10,-10,399">
+        <StackPanel Orientation="Horizontal" Height="25" DockPanel.Dock="Top">
             <Button Name="CreateNewPointButton" Content="Utwórz nowy punkt" Click="CreateNewPoint_Click"/>
             <Button Name="EditPointButton" Content="Edytuj punkt" Click="EditPoint_Click"/>
             <Button Name="DeletePointButton" Content="Usuń punkt" Click="DeletePoint_Click"/>
@@ -22,30 +22,9 @@
         <!--<Button Content="Test" Canvas.Left="288" Canvas.Top="30" Click="Test_click" Margin="429,20,300,357"/>-->
 
 
-        <Canvas Name="SpaceCanvas" Background="AliceBlue" Height="200" Width="500" Margin="175,52,125,182">
-            <!--<Canvas Background="Aquamarine" Height="20" Width="20" Canvas.Bottom="0" Canvas.Left="0">
-                <Ellipse Height="20" Width="20" Stroke="Black" StrokeThickness="1"/>
-                <Label Content="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-
-            </Canvas>-->
-
-            <!--<Border Name="testBorder" CornerRadius="60" Width="20" Height="20" Background="Aquamarine" BorderBrush="Black" BorderThickness="1" MouseLeftButtonUp="Canvas_MouseLeftButtonUp" MouseLeftButtonDown="Canvas_MouseLeftButtonDown" MouseMove="Canvas_MouseMove">
-                <TextBlock HorizontalAlignment="Center" Text="-1" />
-            </Border>-->
-            <Rectangle Fill="Black" Height="2" Width="600" Canvas.Bottom="{Binding LineY}" Canvas.Left="-300" RenderTransformOrigin="0.5,0.5">
-                <Rectangle.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="{Binding LineAngle}"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </Rectangle.RenderTransform>
-            </Rectangle>
-        </Canvas>
         <!--<StackPanel Orientation="Vertical" Height="300" Margin="10,52,643,82">-->
 
-        <StackPanel Orientation="Vertical" Height="300" Width="100" HorizontalAlignment="Left">
+        <StackPanel Orientation="Vertical" Width="100" DockPanel.Dock="Left" Background="Black">
             <Grid Background="Beige" ShowGridLines="True">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="40"/>
@@ -65,5 +44,28 @@
             </Grid>
 
         </StackPanel>
-    </Grid>
+        <Canvas Name="SpaceCanvas" Background="AliceBlue" Width="{x:Static local:Configuration.SpaceCanvasWidth}" Height="{x:Static local:Configuration.SpaceCanvasHeight}">
+            <Rectangle Name="XAxis" Height="2" Width="700" Fill="{x:Static local:Configuration.AxesBrush}" Canvas.Left="0" Canvas.Top="200"/>
+            <Rectangle Name="YAxis" Height="400" Width="2" Fill="{x:Static local:Configuration.AxesBrush}" Canvas.Left="350" Canvas.Top="0"/>
+            <!--<Canvas Background="Aquamarine" Height="20" Width="20" Canvas.Bottom="0" Canvas.Left="0">
+                <Ellipse Height="20" Width="20" Stroke="Black" StrokeThickness="1"/>
+                <Label Content="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+            </Canvas>-->
+
+            <!--<Border Name="testBorder" CornerRadius="60" Width="20" Height="20" Background="Aquamarine" BorderBrush="Black" BorderThickness="1" MouseLeftButtonUp="Canvas_MouseLeftButtonUp" MouseLeftButtonDown="Canvas_MouseLeftButtonDown" MouseMove="Canvas_MouseMove">
+                <TextBlock HorizontalAlignment="Center" Text="-1" />
+            </Border>-->
+            <Rectangle Fill="Black" Height="2" Width="700" Canvas.Bottom="{Binding LineY}" Canvas.Left="0" RenderTransformOrigin="0.5,0.5">
+                <Rectangle.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="{Binding LineAngle}"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Rectangle.RenderTransform>
+            </Rectangle>
+        </Canvas>
+    </DockPanel>
 </Window>
