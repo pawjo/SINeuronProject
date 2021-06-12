@@ -20,7 +20,10 @@ namespace SINeuronWPFApp.ViewModels
             get
             {
                 if (Neuron.Weights != null)
-                    return Math.Atan(Neuron.Weights[1] / Neuron.Weights[2]);
+                {
+                    double result = Math.Atan(Neuron.Weights[1] / Neuron.Weights[2]) * (180 / Math.PI);
+                    return result;
+                }
                 else
                     return 0;
             }

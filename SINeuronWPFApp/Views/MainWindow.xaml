@@ -6,8 +6,9 @@
         xmlns:local="clr-namespace:SINeuronWPFApp"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid Margin="0,12,0,-12">
-
+    <!--<Grid Margin="0,12,0,-12">-->
+    <Grid>
+        <!--<StackPanel Orientation="Horizontal" Height="25" Margin="10,10,-10,399">-->
         <StackPanel Orientation="Horizontal" Height="25" Margin="10,10,-10,399">
             <Button Name="CreateNewPointButton" Content="Utwórz nowy punkt" Click="CreateNewPoint_Click"/>
             <Button Name="EditPointButton" Content="Edytuj punkt" Click="EditPoint_Click"/>
@@ -31,7 +32,7 @@
             <!--<Border Name="testBorder" CornerRadius="60" Width="20" Height="20" Background="Aquamarine" BorderBrush="Black" BorderThickness="1" MouseLeftButtonUp="Canvas_MouseLeftButtonUp" MouseLeftButtonDown="Canvas_MouseLeftButtonDown" MouseMove="Canvas_MouseMove">
                 <TextBlock HorizontalAlignment="Center" Text="-1" />
             </Border>-->
-            <Rectangle Fill="Black" Height="2" Width="300" Canvas.Bottom="{Binding LineY}" Canvas.Left="0" RenderTransformOrigin="0,0">
+            <Rectangle Fill="Black" Height="2" Width="600" Canvas.Bottom="{Binding LineY}" Canvas.Left="-300" RenderTransformOrigin="0.5,0.5">
                 <Rectangle.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform/>
@@ -42,8 +43,9 @@
                 </Rectangle.RenderTransform>
             </Rectangle>
         </Canvas>
+        <!--<StackPanel Orientation="Vertical" Height="300" Margin="10,52,643,82">-->
 
-        <StackPanel Orientation="Vertical" Height="300" Margin="10,52,643,82">
+        <StackPanel Orientation="Vertical" Height="300" Width="100" HorizontalAlignment="Left">
             <Grid Background="Beige" ShowGridLines="True">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="40"/>

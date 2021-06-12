@@ -95,6 +95,16 @@ namespace SINeuronxUnitTests
         }
 
         [Fact]
+        public void AutoLearningTest6()
+        {
+            InitializeNeuronWithWeights(310, -13, -8, CreateExampleSet4());
+            neuron.AutoLearning();
+            bool expected = true;
+            bool result = neuron.CompletedLearning;
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
         public void MixedLearningTest1()
         {
             InitializeNeuronWithWeights(304, 45, 23, CreateExampleSet1());
@@ -159,6 +169,24 @@ namespace SINeuronxUnitTests
             // punkt psujacy
             set.Add(new ValuePoint { X = 7, Y = 12, Value = 1 });
 
+
+            return set;
+        }
+
+        private static List<ValuePoint> CreateExampleSet4()
+        {
+            var set = new List<ValuePoint>();
+            set.Add(new ValuePoint { X = -80, Y = 30, Value = 1 });
+            set.Add(new ValuePoint { X = -90, Y = 50, Value = 1 });
+            set.Add(new ValuePoint { X = -50, Y = 0, Value = 1 });
+            set.Add(new ValuePoint { X = -60, Y = 10, Value = 1 });
+            set.Add(new ValuePoint { X = 50, Y = -50, Value = 1 });
+
+            set.Add(new ValuePoint { X = 20, Y = 80, Value = -1 });
+            set.Add(new ValuePoint { X = 50, Y = 120, Value = -1 });
+            set.Add(new ValuePoint { X = 50, Y = 60, Value = -1 });
+            set.Add(new ValuePoint { X = 10, Y = 20, Value = -1 });
+            set.Add(new ValuePoint { X = 60, Y = 140, Value = -1 });
 
             return set;
         }
