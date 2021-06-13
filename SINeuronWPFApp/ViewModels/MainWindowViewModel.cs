@@ -142,9 +142,9 @@ namespace SINeuronWPFApp.ViewModels
                 Synchronize();
 
             Neuron.Initialize(TrainingSet);
-            Neuron.Weights[0] = -304;
-            Neuron.Weights[1] = 40;
-            Neuron.Weights[2] = 23;
+            //Neuron.Weights[0] = -304;
+            //Neuron.Weights[1] = 40;
+            //Neuron.Weights[2] = 23;
 
             WeightsPropertyChanged();
             return true;
@@ -232,13 +232,13 @@ namespace SINeuronWPFApp.ViewModels
                 Content = 0
             };
             SpaceCanvas.Children.Add(zeroLabel);
-            Canvas.SetLeft(zeroLabel, Configuration.SpaceCanvasXOffset - 15);
-            Canvas.SetTop(zeroLabel, Configuration.SpaceCanvasYOffset + 12);
+            Canvas.SetLeft(zeroLabel, SpaceCanvas.Width / 2 - 15);
+            Canvas.SetTop(zeroLabel, SpaceCanvas.Height / 2 + 12);
 
-            for (int i = -(int)Configuration.SpaceCanvasXOffset; i < Configuration.SpaceCanvasWidth; i += 50)
+            for (int i = -(int)(SpaceCanvas.Width / 2); i < SpaceCanvas.Width; i += 50)
                 createXLabel(i);
 
-            for (int i = -(int)Configuration.SpaceCanvasYOffset; i < Configuration.SpaceCanvasHeight; i += 50)
+            for (int i = -(int)(SpaceCanvas.Height / 2); i < SpaceCanvas.Height; i += 50)
                 createYLabel(i);
         }
 
@@ -277,8 +277,8 @@ namespace SINeuronWPFApp.ViewModels
 
                 SpaceCanvas.Children.Add(sp);
                 //Canvas.SetLeft(sp, Configuration.SpaceCanvasXOffset - 7 - 3.5 * digitCount + val);
-                Canvas.SetLeft(sp, Configuration.SpaceCanvasXOffset - 3.5 - 3.5 * stringVal.Length + val);
-                Canvas.SetTop(sp, Configuration.SpaceCanvasYOffset - 8);
+                Canvas.SetLeft(sp, SpaceCanvas.Width / 2 - 3.5 - 3.5 * stringVal.Length + val);
+                Canvas.SetTop(sp, SpaceCanvas.Height / 2 - 8);
             }
         }
 
@@ -336,7 +336,7 @@ namespace SINeuronWPFApp.ViewModels
         private UIPoint createUIPoint(ValuePoint point)
         {
             var border = new Border();
-            SetBorderCanvasPosition(border, point.X, SpaceCanvas.Height - point.Y);
+            SetBorderCanvasPosition(border, point.X, point.Y);
             border.Width = Configuration.PointSize;
             border.Height = Configuration.PointSize;
             border.BorderBrush = Configuration.PointBorderBrush;
@@ -362,8 +362,12 @@ namespace SINeuronWPFApp.ViewModels
 
         private ValuePoint createValuePoint(Border border)
         {
-            double x = Canvas.GetLeft(border) - Configuration.SpaceCanvasXOffset + Configuration.PointOffset;
-            double y = SpaceCanvas.Height - Canvas.GetTop(border) - Configuration.SpaceCanvasYOffset - Configuration.PointOffset;
+            //double x = Canvas.GetLeft(border) - Configuration.SpaceCanvasXOffset + Configuration.PointOffset;
+            //double y = SpaceCanvas.Height - Canvas.GetTop(border) - Configuration.SpaceCanvasYOffset - Configuration.PointOffset;
+
+            double x = Canvas.GetLeft(border) - SpaceCanvas.Width / 2 + Configuration.PointOffset;
+            double y = SpaceCanvas.Height / 2 - Canvas.GetTop(border) - Configuration.PointOffset;
+
             var textBlock = border.Child as TextBlock;
             if (textBlock != null)
                 return new ValuePoint
@@ -404,11 +408,14 @@ namespace SINeuronWPFApp.ViewModels
                 return null;
         }
 
-        private void SetBorderCanvasPosition(Border border, double x, double y)
+        private void SetBorderCanvasPosition(Border border, double left, double bottom)
         {
             double offset = Configuration.PointOffset;
-            Canvas.SetLeft(border, x - offset + Configuration.SpaceCanvasXOffset);
-            Canvas.SetTop(border, y - offset - Configuration.SpaceCanvasYOffset);
+            //Canvas.SetLeft(border, x - offset + Configuration.SpaceCanvasXOffset);
+            //Canvas.SetTop(border, y - offset - Configuration.SpaceCanvasYOffset);
+
+            Canvas.SetLeft(border, left - offset + SpaceCanvas.Width / 2);
+            Canvas.SetTop(border, SpaceCanvas.Height / 2 - bottom - offset);
         }
 
         private void SpaceCanvas_MouseDown(object sender, MouseButtonEventArgs e)
