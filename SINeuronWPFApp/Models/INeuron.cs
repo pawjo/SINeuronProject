@@ -12,6 +12,8 @@ namespace SINeuronWPFApp.Models
 
         public int EpochIterator { get; set; }
 
+        public List<double> ErrorLog { get; set; }
+
         public double ErrorTolerance { get; set; }
 
         public int IterationCount { get; set; }

@@ -24,13 +24,15 @@
 
         <!--<StackPanel Orientation="Vertical" Height="300" Margin="10,52,643,82">-->
 
-        <StackPanel Orientation="Vertical" Width="100" DockPanel.Dock="Left" Background="Black">
+        <StackPanel Orientation="Vertical" Width="120" DockPanel.Dock="Left">
             <Grid Background="Beige" ShowGridLines="True">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="60"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
@@ -41,7 +43,45 @@
                 <Label Name="w1ValueLabel"  Grid.Column="1" Grid.Row="1" Content="{Binding Weight1, Mode=OneWay}"/>
                 <Label Name="w2Label"       Grid.Column="0" Grid.Row="2" Content="w2"/>
                 <Label Name="w2ValueLabel"  Grid.Column="1" Grid.Row="2" Content="{Binding Weight2, Mode=OneWay}"/>
+                <Label Name="IterationLabel"       Grid.Column="0" Grid.Row="3" Content="Iteracja"/>
+                <Label Name="IterationValueLabel"  Grid.Column="1" Grid.Row="3" Content="{Binding Iteration, Mode=OneWay}"/>
+                <!--<Label Name="w2Label"       Grid.Column="0" Grid.Row="2" Content="w2"/>
+                <Label Name="w2ValueLabel"  Grid.Column="1" Grid.Row="2" Content="{Binding Weight2, Mode=OneWay}"/>-->
             </Grid>
+
+
+            <!--<Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="60"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Id" Grid.Column="0"/>
+                <Label Content="X" Grid.Column="1"/>
+                <Label Content="Y" Grid.Column="2"/>
+                <Label Content="Wartość" Grid.Column="3"/>
+            </Grid>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <ItemsControl Name="PointList">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="60"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Content="{Binding }" Grid.Column="0"/>
+                                <Label Content="X" Grid.Column="1"/>
+                                <Label Content="Y" Grid.Column="2"/>
+                                <Label Content="Wartość" Grid.Column="3"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>-->
 
         </StackPanel>
         <Canvas Name="SpaceCanvas" Background="AliceBlue" Width="{x:Static local:Configuration.SpaceCanvasWidth}" Height="{x:Static local:Configuration.SpaceCanvasHeight}">

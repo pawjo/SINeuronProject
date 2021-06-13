@@ -16,6 +16,17 @@ namespace SINeuronWPFApp.ViewModels
 
         public bool IsSynchronized { get; set; }
 
+        public int Iteration
+        {
+            get
+            {
+                if (Neuron != null)
+                    return Neuron.IterationCount;
+                else
+                    return 0;
+            }
+        }
+
         public double LineAngle
         {
             get
@@ -124,7 +135,7 @@ namespace SINeuronWPFApp.ViewModels
             if (point != null)
             {
                 if (oldPoint.X != point.X || oldPoint.Y != point.Y)
-                    SetBorderCanvasPosition(border, point.X, SpaceCanvas.Height - point.Y);
+                    SetBorderCanvasPosition(border, point.X, point.Y);
                 if (oldPoint.Value != point.Value)
                 {
                     var textBlock = border.Child as TextBlock;
@@ -146,17 +157,18 @@ namespace SINeuronWPFApp.ViewModels
             //Neuron.Weights[1] = 40;
             //Neuron.Weights[2] = 23;
 
-            WeightsPropertyChanged();
+            IterationPropertyChanged();
             return true;
         }
 
-        public void WeightsPropertyChanged()
+        public void IterationPropertyChanged()
         {
             onPropertyChanged(nameof(Weight0));
             onPropertyChanged(nameof(Weight1));
             onPropertyChanged(nameof(Weight2));
             onPropertyChanged(nameof(LineAngle));
             onPropertyChanged(nameof(LineY));
+            onPropertyChanged(nameof(Iteration));
         }
 
         public void MoveElement(UIElement element, double dx, double dy)
@@ -267,16 +279,7 @@ namespace SINeuronWPFApp.ViewModels
                 };
                 sp.Children.Add(label);
 
-                //int digitCount = 0;
-                //if (val >= 1000)
-                //    digitCount = 3;
-                //else if (val >= 100)
-                //    digitCount = 2;
-                //else if (val >= 10)
-                //    digitCount = 1;
-
                 SpaceCanvas.Children.Add(sp);
-                //Canvas.SetLeft(sp, Configuration.SpaceCanvasXOffset - 7 - 3.5 * digitCount + val);
                 Canvas.SetLeft(sp, SpaceCanvas.Width / 2 - 3.5 - 3.5 * stringVal.Length + val);
                 Canvas.SetTop(sp, SpaceCanvas.Height / 2 - 8);
             }
@@ -307,16 +310,7 @@ namespace SINeuronWPFApp.ViewModels
                 };
                 sp.Children.Add(rect);
 
-                //int digitCount = 0;
-                //if (val >= 1000)
-                //    digitCount = 3;
-                //else if (val >= 100)
-                //    digitCount = 2;
-                //else if (val >= 10)
-                //    digitCount = 1;
-
                 SpaceCanvas.Children.Add(sp);
-                //Canvas.SetLeft(sp, Configuration.SpaceCanvasXOffset - 26 - 6 * digitCount);
                 Canvas.SetLeft(sp, Configuration.SpaceCanvasXOffset - 20 - 6 * stringVal.Length);
                 Canvas.SetTop(sp, Configuration.SpaceCanvasYOffset - 12 - val);
             }

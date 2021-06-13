@@ -97,7 +97,7 @@ namespace SINeuronWPFApp
         private void StepLearning_Click(object sender, RoutedEventArgs e)
         {
             vm.Neuron.StepLearning();
-            vm.WeightsPropertyChanged();
+            vm.IterationPropertyChanged();
         }
 
         private void EpochLearning_Click(object sender, RoutedEventArgs e)
@@ -106,7 +106,7 @@ namespace SINeuronWPFApp
             {
                 LearningCompletedLabel.Visibility = Visibility.Visible;
             }
-            vm.WeightsPropertyChanged();
+            vm.IterationPropertyChanged();
         }
 
         private void AutoLearning_Click(object sender, RoutedEventArgs e)
@@ -115,7 +115,7 @@ namespace SINeuronWPFApp
             {
                 LearningCompletedLabel.Visibility = Visibility.Visible;
             }
-            vm.WeightsPropertyChanged();
+            vm.IterationPropertyChanged();
         }
 
         

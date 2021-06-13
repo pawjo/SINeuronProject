@@ -13,6 +13,8 @@ namespace SINeuronWPFApp.Models
         
         public int EpochIterator { get; set; }
 
+        public List<double> ErrorLog { get; set; }
+
         public double ErrorTolerance { get; set; }
         
         public int IterationCount { get; set; }
@@ -83,6 +85,7 @@ namespace SINeuronWPFApp.Models
             CurrentError /= 2;
             if (CheckStopCondition())
                 CompletedLearning = true;
+            ErrorLog.Add(CurrentError);
             CurrentError = 0;
         }
 
@@ -93,6 +96,12 @@ namespace SINeuronWPFApp.Models
             EpochIterator = 0;
             EpochSize = trainingSet.Count;
             IterationCount = 0;
+            
+            if (ErrorLog == null)
+                ErrorLog = new List<double>();
+            else
+                ErrorLog.Clear();
+
             TrainingSet = trainingSet;
             var random = new Random();
             if (Weights == null)
