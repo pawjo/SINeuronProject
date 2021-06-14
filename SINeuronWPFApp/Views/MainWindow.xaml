@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SINeuronWPFApp"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
         Title="MainWindow" Width="800" Height="425">
     <!--<Grid Margin="0,12,0,-12">-->
@@ -24,8 +25,8 @@
 
         <!--<StackPanel Orientation="Vertical" Height="300" Margin="10,52,643,82">-->
 
-        <StackPanel Orientation="Vertical" Width="120" DockPanel.Dock="Left">
-            <Grid Background="Beige" ShowGridLines="True">
+        <StackPanel Orientation="Vertical" Width="200" DockPanel.Dock="Left">
+            <Grid ShowGridLines="True">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="60"/>
                     <ColumnDefinition Width="*"/>
@@ -49,6 +50,17 @@
                 <Label Name="w2ValueLabel"  Grid.Column="1" Grid.Row="2" Content="{Binding Weight2, Mode=OneWay}"/>-->
             </Grid>
 
+            <Grid>
+                <Label Name="ErrorLabel" Content="{Binding ErrorMessage}"/>
+                <lvc:CartesianChart Series="{Binding SeriesCollection}" Height="200">
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Błąd" LabelFormatter="{Binding YFormatter}" MinValue="0"/>
+                    </lvc:CartesianChart.AxisY>
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Title="Epoka" Labels="{Binding Labels}" Unit="1"/>
+                    </lvc:CartesianChart.AxisX>
+                </lvc:CartesianChart>
+            </Grid>
 
             <!--<Grid>
                 <Grid.ColumnDefinitions>

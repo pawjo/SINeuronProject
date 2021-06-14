@@ -96,7 +96,12 @@ namespace SINeuronWPFApp
 
         private void StepLearning_Click(object sender, RoutedEventArgs e)
         {
+            int beforeCount = vm.Neuron.ErrorLog.Count;
             vm.Neuron.StepLearning();
+            int afterCount = vm.Neuron.ErrorLog.Count;
+            if (beforeCount != afterCount)
+                vm.CreateChart();
+
             vm.IterationPropertyChanged();
         }
 
@@ -106,6 +111,7 @@ namespace SINeuronWPFApp
             {
                 LearningCompletedLabel.Visibility = Visibility.Visible;
             }
+            vm.CreateChart();
             vm.IterationPropertyChanged();
         }
 
@@ -115,6 +121,7 @@ namespace SINeuronWPFApp
             {
                 LearningCompletedLabel.Visibility = Visibility.Visible;
             }
+            vm.CreateChart();
             vm.IterationPropertyChanged();
         }
 

@@ -1,4 +1,6 @@
-﻿using SINeuronWPFApp.Models;
+﻿using LiveCharts;
+using LiveCharts.Wpf;
+using SINeuronWPFApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -68,6 +70,14 @@ namespace SINeuronWPFApp.ViewModels
 
 
 
+        public SeriesCollection SeriesCollection { get; set; }
+
+        public string[] Labels { get; set; }
+
+        public Func<double, string> YFormatter { get; set; }
+
+
+
         public MainWindowViewModel(Canvas spaceCanvas)
         {
             createPerceptron();
@@ -92,6 +102,32 @@ namespace SINeuronWPFApp.ViewModels
             createPoint(new ValuePoint { X = 50, Y = 60, Value = -1 });
             createPoint(new ValuePoint { X = 10, Y = 20, Value = -1 });
             createPoint(new ValuePoint { X = 60, Y = 140, Value = -1 });
+        }
+
+
+
+        public void CreateChart()
+        {
+            if (Neuron.ErrorLog != null)
+            {
+                SeriesCollection = new SeriesCollection
+                {
+                    new LineSeries
+                    {
+                        Title = "Wykres błędu uczenia",
+                        Values = new ChartValues<double>(Neuron.ErrorLog)
+                    }
+                };
+
+                int length = Neuron.ErrorLog.Count;
+                Labels = new string[length];
+                for (int i = 0; i < length; i++)
+                    Labels[i] = (i + 1).ToString();
+
+                YFormatter = value => value.ToString();
+            }
+            onPropertyChanged(nameof(SeriesCollection));
+            onPropertyChanged(nameof(Labels));
         }
 
         private void createPoint(ValuePoint point)
