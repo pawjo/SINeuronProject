@@ -21,6 +21,8 @@ namespace SINeuronWPFApp.Models
 
         public int IterationMax { get; set; }
 
+        public int IterationWarning { get; set; }
+
         public double LearningRate { get; set; }
 
         public bool StopConditionErrorTolerance { get; set; }
@@ -29,23 +31,18 @@ namespace SINeuronWPFApp.Models
 
         public double[] Weights { get; set; }
 
-        // Metoda zwraca true w przypadku pomyslnego zakonczenia
-        // uczenia w zależnosci od wyboru użytkownika, czyli
-        // zostanie osiągniety blad docelowy lub zostanie osiągnieta
-        // maksymalna liczba iteracji.
-        // Jezeli maksymalna liczba iteracji zostanie przekroczona,
-        // a użytkownik określił warunek zatrzymania jako blad docelowy,
-        // zwracana jest wartosc false.
-        public bool AutoLearning()
+        // Uczenie w zaleznosci od wybory uzytkownika,
+        // trwa do momentu osiagniecia okreslonego bledu
+        // lub do momentu przekroczenia maksymalnej liczby iteracji.
+        // w pierwszym przypadku, w razie przekroczenia liczby
+        // bezpieczenstwa iteracji, zostaje wyrzucony
+        // wyjatek, dotyczacy zbyt dlugiego uczenia.
+        public void AutoLearning()
         {
-            IterationCount = 0;
-
             while(!CompletedLearning)
             {
-                if (!EpochLearning())
-                    return false;
+                EpochLearning();
             }
-            return true;
         }
 
         public int CalculateOutput(double x1, double x2)
@@ -59,22 +56,19 @@ namespace SINeuronWPFApp.Models
             if (StopConditionErrorTolerance)
                 return CurrentError <= ErrorTolerance;
             else
-                return IterationCount > IterationMax;
+                return IterationCount == IterationMax;
         }
 
-        // Jezeli maksymalna liczba iteracji zostanie przekroczona zanim
-        // zakonczy sie uczenie dla calej epoki, zwracana jest wartosc false.
-        // W innym wypadku zwracana jest wartosc true.
-        public bool EpochLearning()
+        public void EpochLearning()
         {
+            if (CompletedLearning)
+                return;
+
             while(EpochIterator < EpochSize)
             {
-                if (IterationCount > IterationMax)
-                    return false;
                 StepLearning();
             }
             FinalizeEpoch();
-            return true;
         }
 
         // Konczy uczenie epoki, jezeli warunek zatrzymania jest spełniony,
@@ -114,6 +108,22 @@ namespace SINeuronWPFApp.Models
         // Wykonuje jeden krok uczenia dla jednego obiektu.
         public void StepLearning()
         {
+            if (CompletedLearning)
+                return;
+
+            // Jeżeli warunkiem zatrzymania jest dopuszczalny blad,
+            // sprawdzane jest czy liczba iteracji nie przekracza progu bezpieczenstwa,
+            // przy ktorym uczenienie jest wstrzymywane i pokazywane jest powiadomienie.
+            if (StopConditionErrorTolerance
+                && IterationCount == IterationWarning)
+                throw new Exception($"Przekroczono próg bezpieczeństwa" +
+                    $" {IterationWarning} iteracji.");
+
+            if(!StopConditionErrorTolerance
+                && IterationCount == IterationMax)
+                throw new Exception($"Przekroczono określony próg" +
+                    $" {IterationMax} iteracji.");
+
             if (TrainingSet == null)
                 throw new NullReferenceException("Zbior testowy jest nullem.");
 

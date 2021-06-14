@@ -1,9 +1,11 @@
 ﻿using LiveCharts;
 using LiveCharts.Wpf;
 using SINeuronWPFApp.Models;
+using SINeuronWPFApp.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -76,6 +78,8 @@ namespace SINeuronWPFApp.ViewModels
 
         public Func<double, string> YFormatter { get; set; }
 
+        public double MaxValueY { get; set; }
+
 
 
         public MainWindowViewModel(Canvas spaceCanvas)
@@ -87,6 +91,7 @@ namespace SINeuronWPFApp.ViewModels
             UIPoints = new List<UIPoint>();
             createAxesLabels();
             CreateExampleSet2();
+            CreateChart();
         }
 
         private void CreateExampleSet2()
@@ -108,24 +113,35 @@ namespace SINeuronWPFApp.ViewModels
 
         public void CreateChart()
         {
-            if (Neuron.ErrorLog != null)
+            List<double> values = Neuron.ErrorLog;
+            if (values == null)
+                values = new List<double>();
+            //if (values.Count == 0)
+            //{
+            //    values.Add(0);
+            //    MaxValueY = 10;
+            //}
+            //else
+            //    MaxValueY = values.Max();
+
+            SeriesCollection = new SeriesCollection
             {
-                SeriesCollection = new SeriesCollection
+                new LineSeries
                 {
-                    new LineSeries
-                    {
-                        Title = "Wykres błędu uczenia",
-                        Values = new ChartValues<double>(Neuron.ErrorLog)
-                    }
-                };
+                    Title = "Wykres błędu uczenia",
+                    Values = new ChartValues<double>(values)
+                }
+            };
 
-                int length = Neuron.ErrorLog.Count;
-                Labels = new string[length];
-                for (int i = 0; i < length; i++)
-                    Labels[i] = (i + 1).ToString();
+            int length = values.Count;
+            Labels = new string[length];
+            for (int i = 0; i < length; i++)
+                Labels[i] = (i + 1).ToString();
 
-                YFormatter = value => value.ToString();
-            }
+            YFormatter = value => value.ToString();
+
+
+
             onPropertyChanged(nameof(SeriesCollection));
             onPropertyChanged(nameof(Labels));
         }
@@ -193,6 +209,7 @@ namespace SINeuronWPFApp.ViewModels
             //Neuron.Weights[1] = 40;
             //Neuron.Weights[2] = 23;
 
+            CreateChart();
             IterationPropertyChanged();
             return true;
         }
@@ -211,6 +228,27 @@ namespace SINeuronWPFApp.ViewModels
         {
             Canvas.SetLeft(element, Canvas.GetLeft(element) + dx);
             Canvas.SetTop(element, Canvas.GetTop(element) + dy);
+        }
+
+        public void Settings()
+        {
+            var settingsVm = new SettingsViewModel
+            {
+                ErrorTolerance = Neuron.ErrorTolerance,
+                IterationMax = Neuron.IterationMax,
+                IterationWarning = Neuron.IterationWarning,
+                StopConditionErrorTolerance = Neuron.StopConditionErrorTolerance
+            };
+
+            var settingsWindow = new SettingsWindow(settingsVm);
+            settingsWindow.ShowDialog();
+            if (settingsVm.ChangesSubmitted)
+            {
+                Neuron.ErrorTolerance = settingsVm.ErrorTolerance;
+                Neuron.IterationMax = settingsVm.IterationMax;
+                Neuron.IterationWarning = settingsVm.IterationWarning;
+                Neuron.StopConditionErrorTolerance = settingsVm.StopConditionErrorTolerance;
+            }
         }
 
         public void Synchronize()
@@ -357,7 +395,8 @@ namespace SINeuronWPFApp.ViewModels
             Neuron = new Perceptron
             {
                 ErrorTolerance = 0.5,
-                IterationMax = 1000,
+                IterationMax = 20,
+                IterationWarning = 1000,
                 LearningRate = 0.5,
                 StopConditionErrorTolerance = true,
             };

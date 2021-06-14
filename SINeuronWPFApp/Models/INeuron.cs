@@ -20,6 +20,8 @@ namespace SINeuronWPFApp.Models
 
         public int IterationMax { get; set; }
 
+        public int IterationWarning { get; set; }
+
         public double LearningRate { get; set; }
         
         public bool StopConditionErrorTolerance { get; set; }
@@ -28,13 +30,13 @@ namespace SINeuronWPFApp.Models
 
         public double[] Weights { get; set; }
 
-        public bool AutoLearning();
+        public void AutoLearning();
         
         public int CalculateOutput(double x1, double x2);
         
         public bool CheckStopCondition();
 
-        public bool EpochLearning();
+        public void EpochLearning();
 
         public void FinalizeEpoch();
 

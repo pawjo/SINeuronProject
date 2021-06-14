@@ -1,5 +1,6 @@
 ﻿using SINeuronWPFApp.Models;
 using SINeuronWPFApp.ViewModels;
+using SINeuronWPFApp.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,7 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SINeuronWPFApp
+namespace SINeuronWPFApp.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -24,7 +25,7 @@ namespace SINeuronWPFApp
     public partial class MainWindow : Window
     {
         private List<Button> neuronButtons { get; set; }
-        
+
         public MainWindow()
         {
             InitializeComponent();
@@ -37,7 +38,7 @@ namespace SINeuronWPFApp
             neuronButtons.Add(AutoLearningButton);
             disableNeuronButtons();
         }
-        
+
 
 
         private void CreateNewPoint_Click(object sender, RoutedEventArgs e)
@@ -72,7 +73,7 @@ namespace SINeuronWPFApp
                 item.IsEnabled = false;
             }
         }
-        
+
         private void EditPoint_Click(object sender, RoutedEventArgs e)
         {
             if (vm.ActiveBorder != null)
@@ -97,35 +98,63 @@ namespace SINeuronWPFApp
         private void StepLearning_Click(object sender, RoutedEventArgs e)
         {
             int beforeCount = vm.Neuron.ErrorLog.Count;
-            vm.Neuron.StepLearning();
+            try
+            {
+                vm.Neuron.StepLearning();
+            }
+            catch (Exception exc)
+            {
+                new Notification(exc.Message).ShowDialog();
+            }
+
+            afterLearning();
             int afterCount = vm.Neuron.ErrorLog.Count;
             if (beforeCount != afterCount)
                 vm.CreateChart();
-
-            vm.IterationPropertyChanged();
         }
 
         private void EpochLearning_Click(object sender, RoutedEventArgs e)
         {
-            if (vm.Neuron.EpochLearning() && vm.Neuron.CompletedLearning)
+            try
             {
-                LearningCompletedLabel.Visibility = Visibility.Visible;
+                vm.Neuron.EpochLearning();
             }
+            catch (Exception exc)
+            {
+                new Notification(exc.Message).ShowDialog();
+            }
+
+            afterLearning();
             vm.CreateChart();
-            vm.IterationPropertyChanged();
         }
 
         private void AutoLearning_Click(object sender, RoutedEventArgs e)
         {
-            if (vm.Neuron.AutoLearning())
+            try
             {
-                LearningCompletedLabel.Visibility = Visibility.Visible;
+                vm.Neuron.AutoLearning();
             }
+            catch (Exception exc)
+            {
+                new Notification(exc.Message).ShowDialog();
+            }
+
+            afterLearning();
             vm.CreateChart();
-            vm.IterationPropertyChanged();
         }
 
-        
+        private void Settings_Click(object sender, RoutedEventArgs e)
+        {
+            vm.Settings();
+        }
+
+        private void afterLearning()
+        {
+            if (vm.Neuron.CompletedLearning)
+                LearningCompletedLabel.Visibility = Visibility.Visible;
+
+            vm.IterationPropertyChanged();
+        }
 
 
 

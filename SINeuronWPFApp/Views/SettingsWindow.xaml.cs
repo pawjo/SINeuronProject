@@ -16,32 +16,21 @@ using System.Windows.Shapes;
 namespace SINeuronWPFApp.Views
 {
     /// <summary>
-    /// Interaction logic for CreateNewPointDialog.xaml
+    /// Interaction logic for SettingsWindow.xaml
     /// </summary>
-    public partial class PointDialogWindow : Window
+    public partial class SettingsWindow : Window
     {
-
-        public PointDialogWindow(PointDialogViewModel _vm)
+        public SettingsWindow(SettingsViewModel _vm)
         {
             DataContext = vm = _vm;
             InitializeComponent();
         }
-        
-        private readonly PointDialogViewModel vm;
-        
+
+        private readonly SettingsViewModel vm;
+
         private void cancel() => this.Close();
 
         private void CancelButton_Click(object sender, RoutedEventArgs e) => cancel();
-        
-        private void RB_1_Checked(object sender, RoutedEventArgs e)
-        {
-            vm.Point.Value = 1;
-        }
-
-        private void RB_minus_1_Checked(object sender, RoutedEventArgs e)
-        {
-            vm.Point.Value = -1;
-        }
 
         private void submit()
         {
@@ -53,7 +42,7 @@ namespace SINeuronWPFApp.Views
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            switch(e.Key)
+            switch (e.Key)
             {
                 case Key.Enter:
                     submit();
@@ -62,6 +51,16 @@ namespace SINeuronWPFApp.Views
                     cancel();
                     break;
             }
+        }
+
+        private void RB_errorTolerance_Checked(object sender, RoutedEventArgs e)
+        {
+            vm.StopConditionErrorTolerance = true;
+        }
+
+        private void RB_maxIteration_Checked(object sender, RoutedEventArgs e)
+        {
+            vm.StopConditionErrorTolerance = false;
         }
     }
 }

@@ -1,9 +1,9 @@
-﻿<Window x:Class="SINeuronWPFApp.PointDialogWindow"
+﻿<Window x:Class="SINeuronWPFApp.Views.PointDialogWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SINeuronWPFApp"
+        xmlns:local="clr-namespace:SINeuronWPFApp.Views"
         mc:Ignorable="d"
         Title="{Binding Text}" Height="200" Width="250" KeyDown="Window_KeyDown">
     <StackPanel Orientation="Vertical">
