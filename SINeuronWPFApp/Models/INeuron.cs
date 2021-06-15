@@ -42,6 +42,8 @@ namespace SINeuronWPFApp.Models
 
         public void Initialize(List<ValuePoint> trainingSet);
 
+        public void Reset();
+
         public void StepLearning();
     }
 }

@@ -100,7 +100,8 @@ namespace SINeuronWPFApp.ViewModels
         // Obsluga plikow
         public void OpenSet(string path)
         {
-            clearUIPoints();
+            clearPoints();
+            Reset();
 
             try
             {
@@ -280,6 +281,7 @@ namespace SINeuronWPFApp.ViewModels
                 TrainingSet.Add(point);
                 var uiPoint = createUIPoint(point);
                 UIPoints.Add(uiPoint);
+                Reset();
             }
         }
 
@@ -294,6 +296,8 @@ namespace SINeuronWPFApp.ViewModels
                     TrainingSet.RemoveAt(i);
                     return;
                 }
+                IsSynchronized = false;
+                Reset();
             }
         }
 
@@ -313,6 +317,8 @@ namespace SINeuronWPFApp.ViewModels
                     if (textBlock != null)
                         textBlock.Text = point.Value.ToString();
                 }
+                IsSynchronized = false;
+                Reset();
             }
         }
 
@@ -331,6 +337,13 @@ namespace SINeuronWPFApp.ViewModels
             CreateChart();
             IterationPropertyChanged();
             return true;
+        }
+
+        public void Reset()
+        {
+            Neuron.Reset();
+            CreateChart();
+            IterationPropertyChanged();
         }
 
         public void IterationPropertyChanged()
@@ -368,6 +381,7 @@ namespace SINeuronWPFApp.ViewModels
                 Neuron.IterationMax = settingsVm.IterationMax;
                 Neuron.IterationWarning = settingsVm.IterationWarning;
                 Neuron.StopConditionErrorTolerance = settingsVm.StopConditionErrorTolerance;
+                Reset();
             }
         }
 
@@ -414,9 +428,13 @@ namespace SINeuronWPFApp.ViewModels
 
         private void Border_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            isDragging = false;
-            var border = sender as Border;
-            border.ReleaseMouseCapture();
+            if (isDragging)
+            {
+                isDragging = false;
+                var border = sender as Border;
+                border.ReleaseMouseCapture();
+                Reset();
+            }
         }
 
 
@@ -436,7 +454,7 @@ namespace SINeuronWPFApp.ViewModels
         //=================================================
         
 
-        private void clearUIPoints()
+        private void clearPoints()
         {
             foreach (var item in UIPoints)
                 SpaceCanvas.Children.Remove(item.Border);

@@ -85,24 +85,30 @@ namespace SINeuronWPFApp.Models
 
         public void Initialize(List<ValuePoint> trainingSet)
         {
+            Reset();
+            EpochSize = trainingSet.Count;
+            TrainingSet = trainingSet;
+            var random = new Random();
+            for (int i = 0; i < Weights.Length; i++)
+                Weights[i] = random.Next(-300, 300) + random.NextDouble();
+        }
+
+        public void Reset()
+        {
             CompletedLearning = false;
             CurrentError = 0;
             EpochIterator = 0;
-            EpochSize = trainingSet.Count;
             IterationCount = 0;
             
             if (ErrorLog == null)
                 ErrorLog = new List<double>();
             else
                 ErrorLog.Clear();
-
-            TrainingSet = trainingSet;
-            var random = new Random();
+            
             if (Weights == null)
                 Weights = new double[3];
-
-            for (int i = 0; i < Weights.Length; i++)
-                Weights[i] = random.Next(-300, 300) + random.NextDouble();
+            for (int i = 0; i < 3; i++)
+                Weights[i] = 0;
         }
 
         // Wykonuje jeden krok uczenia dla jednego obiektu.

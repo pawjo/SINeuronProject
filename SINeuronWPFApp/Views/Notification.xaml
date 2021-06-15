@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SINeuronWPFApp.Views"
         mc:Ignorable="d"
-        Title="Uwaga!" MinHeight="100" Width="200">
+        Title="Uwaga!" MinHeight="100" MaxHeight="300" Width="200">
     <StackPanel>
         <TextBlock Text="{Binding Message}" TextWrapping="Wrap"/>
         <Button Content="Ok" Click="Button_Click" Width="50" Height=" 20"/>
