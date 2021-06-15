@@ -19,6 +19,17 @@ namespace SINeuronWPFApp.ViewModels
     {
         public Border ActiveBorder { get; set; }
 
+        public double Error
+        {
+            get
+            {
+                if (Neuron.ErrorLog != null && Neuron.ErrorLog.Count > 0)
+                    return Neuron.ErrorLog.Last();
+                else
+                    return 0;
+            }
+        }
+
         public bool IsSynchronized { get; set; }
 
         public int Iteration
@@ -137,9 +148,32 @@ namespace SINeuronWPFApp.ViewModels
             }
         }
 
-        public void OpenSet()
+        public void OpenSet(string path)
         {
+            clearUIPoints();
 
+            try
+            {
+                using (var reader = new ArffReader(path))
+                {
+                    var header = reader.ReadHeader();
+                    object[] instance;
+                    while ((instance = reader.ReadInstance()) != null)
+                    {
+                        createPoint(new ValuePoint
+                        {
+                            X = (double)instance[0],
+                            Y = (double)instance[1],
+                            Value = ((int)instance[2] == 1) ? 1 : -1
+                        });
+                    }
+                    ;
+                }
+            }
+            catch (Exception exc)
+            {
+                new Notification(exc.Message).ShowDialog();
+            }
         }
 
         public void CreateChart()
@@ -247,12 +281,13 @@ namespace SINeuronWPFApp.ViewModels
 
         public void IterationPropertyChanged()
         {
+            onPropertyChanged(nameof(Error));
+            onPropertyChanged(nameof(Iteration));
+            onPropertyChanged(nameof(LineAngle));
+            onPropertyChanged(nameof(LineY));
             onPropertyChanged(nameof(Weight0));
             onPropertyChanged(nameof(Weight1));
             onPropertyChanged(nameof(Weight2));
-            onPropertyChanged(nameof(LineAngle));
-            onPropertyChanged(nameof(LineY));
-            onPropertyChanged(nameof(Iteration));
         }
 
         public void MoveElement(UIElement element, double dx, double dy)
@@ -342,7 +377,15 @@ namespace SINeuronWPFApp.ViewModels
             }
         }
 
-        public void createAxesLabels()
+        private void clearUIPoints()
+        {
+            foreach (var item in UIPoints)
+                SpaceCanvas.Children.Remove(item.Border);
+            UIPoints.Clear();
+            TrainingSet.Clear();
+        }
+
+        private void createAxesLabels()
         {
             var zeroLabel = new Label
             {

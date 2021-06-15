@@ -161,13 +161,22 @@ namespace SINeuronWPFApp.Views
         {
             var dialog = new SaveFileDialog();
             dialog.DefaultExt = "arff";
-            dialog.Filter = "Zbiór danych Weka (*.arff)|*.arff|Wszystkie pliki (*.*)|*.*";
+            dialog.Filter = fileDialogFilter;
             if (dialog.ShowDialog() == true)
                 vm.SaveSet(dialog.FileName);
         }
 
 
+        private void OpenData_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFileDialog();
+            dialog.DefaultExt = "arff";
+            dialog.Filter = fileDialogFilter;
+            if (dialog.ShowDialog() == true)
+                vm.OpenSet(dialog.FileName);
+        }
 
+        private string fileDialogFilter = "Zbiór danych Weka (*.arff)|*.arff|Wszystkie pliki (*.*)|*.*";
 
         //private void Window_KeyDown(object sender, KeyEventArgs e)
         //{

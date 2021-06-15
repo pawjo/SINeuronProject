@@ -13,6 +13,7 @@
         <!--<StackPanel Orientation="Horizontal" Height="25" Margin="10,10,-10,399">-->
         <StackPanel Orientation="Horizontal" Height="25" DockPanel.Dock="Top">
             <Button Name="SaveDataButton"           Content="Zapisz zestaw danych"  Click="SaveData_Click"/>
+            <Button Name="OpenDataButton"           Content="Wczytaj zestaw danych"  Click="OpenData_Click"/>
             <Button Name="CreateNewPointButton"     Content="Utwórz nowy punkt"     Click="CreateNewPoint_Click"/>
             <Button Name="EditPointButton"          Content="Edytuj punkt"          Click="EditPoint_Click"/>
             <Button Name="DeletePointButton"        Content="Usuń punkt"            Click="DeletePoint_Click"/>
@@ -41,29 +42,29 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Label Name="w0Label"       Grid.Column="0" Grid.Row="0" Content="w0" />
-                <Label Name="w0ValueLabel"  Grid.Column="1" Grid.Row="0" Content="{Binding Weight0, Mode=OneWay}"/>
-                <Label Name="w1Label"       Grid.Column="0" Grid.Row="1" Content="w1"/>
-                <Label Name="w1ValueLabel"  Grid.Column="1" Grid.Row="1" Content="{Binding Weight1, Mode=OneWay}"/>
-                <Label Name="w2Label"       Grid.Column="0" Grid.Row="2" Content="w2"/>
-                <Label Name="w2ValueLabel"  Grid.Column="1" Grid.Row="2" Content="{Binding Weight2, Mode=OneWay}"/>
-                <Label Name="IterationLabel"       Grid.Column="0" Grid.Row="3" Content="Iteracja"/>
-                <Label Name="IterationValueLabel"  Grid.Column="1" Grid.Row="3" Content="{Binding Iteration, Mode=OneWay}"/>
+                <Label Name="w0Label"               Grid.Column="0" Grid.Row="0" Content="w0" />
+                <Label Name="w0ValueLabel"          Grid.Column="1" Grid.Row="0" Content="{Binding Weight0, Mode=OneWay}"/>
+                <Label Name="w1Label"               Grid.Column="0" Grid.Row="1" Content="w1"/>
+                <Label Name="w1ValueLabel"          Grid.Column="1" Grid.Row="1" Content="{Binding Weight1, Mode=OneWay}"/>
+                <Label Name="w2Label"               Grid.Column="0" Grid.Row="2" Content="w2"/>
+                <Label Name="w2ValueLabel"          Grid.Column="1" Grid.Row="2" Content="{Binding Weight2, Mode=OneWay}"/>
+                <Label Name="IterationLabel"        Grid.Column="0" Grid.Row="3" Content="Iteracja"/>
+                <Label Name="IterationValueLabel"   Grid.Column="1" Grid.Row="3" Content="{Binding Iteration, Mode=OneWay}"/>
+                <Label Name="ErrorLabel"            Grid.Column="0" Grid.Row="4" Content="Aktualny błąd"/>
+                <Label Name="ErrorValueLabel"       Grid.Column="1" Grid.Row="4" Content="{Binding Error, Mode=OneWay}"/>
                 <!--<Label Name="w2Label"       Grid.Column="0" Grid.Row="2" Content="w2"/>
                 <Label Name="w2ValueLabel"  Grid.Column="1" Grid.Row="2" Content="{Binding Weight2, Mode=OneWay}"/>-->
             </Grid>
 
-            <Grid>
-                <Label Name="ErrorLabel" Content="{Binding ErrorMessage}"/>
-                <lvc:CartesianChart Series="{Binding SeriesCollection}" Height="200">
-                    <lvc:CartesianChart.AxisY>
-                        <lvc:Axis Title="Błąd" LabelFormatter="{Binding YFormatter}" MinValue="0" MaxValue="10"/>
-                    </lvc:CartesianChart.AxisY>
-                    <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Title="Epoka" Labels="{Binding Labels}" Unit="1"/>
-                    </lvc:CartesianChart.AxisX>
-                </lvc:CartesianChart>
-            </Grid>
+            <Label Name="ErrorChartLabel" Content="Wykres błędu uczenia"/>
+            <lvc:CartesianChart Series="{Binding SeriesCollection}" Height="200">
+                <lvc:CartesianChart.AxisY>
+                    <lvc:Axis Title="Błąd" LabelFormatter="{Binding YFormatter}" MinValue="0" MaxValue="10"/>
+                </lvc:CartesianChart.AxisY>
+                <lvc:CartesianChart.AxisX>
+                    <lvc:Axis Title="Epoka" Labels="{Binding Labels}" Unit="1"/>
+                </lvc:CartesianChart.AxisX>
+            </lvc:CartesianChart>
 
             <!--<Grid>
                 <Grid.ColumnDefinitions>
