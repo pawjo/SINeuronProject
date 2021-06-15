@@ -63,7 +63,8 @@ namespace SINeuronWPFApp.Views
 
         private void InitializeLearning_Click(object sender, RoutedEventArgs e)
         {
-            LearningCompletedLabel.Visibility = Visibility.Hidden;
+
+            //LearningCompletedLabel.Visibility = Visibility.Hidden;
             //if (vm.InitializeNeuron())
             //    enableNeuronButtons();
             vm.InitializeNeuron();
@@ -125,7 +126,8 @@ namespace SINeuronWPFApp.Views
         private void afterLearning()
         {
             if (vm.Neuron.CompletedLearning)
-                LearningCompletedLabel.Visibility = Visibility.Visible;
+                //learningcompletedlabel.visibility = visibility.visible;
+                vm.CompletedLearningPropertyChanged();
 
             vm.IterationPropertyChanged();
         }

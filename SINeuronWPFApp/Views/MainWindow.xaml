@@ -51,12 +51,13 @@
             <Button Name="EditPointButton"          Content="Edytuj punkt"          Click="EditPoint_Click"/>
             <Button Name="DeletePointButton"        Content="Usuń punkt"            Click="DeletePoint_Click"/>
             <Button Name="InitializeLearningButton" Content="Inicjalizuj neuron"    Click="InitializeLearning_Click"/>
-            <Button Name="StepLearningButton"       Content="Krok uczenia"          Click="StepLearning_Click"  IsEnabled="{Binding IsSynchronized, Mode=OneWay}"/>
-            <Button Name="EpochLearningButton"      Content="Epoka uczenia"         Click="EpochLearning_Click" IsEnabled="{Binding IsSynchronized, Mode=OneWay}"/>
-            <Button Name="AutoLearningButton"       Content="Uczenie automatyczne"  Click="AutoLearning_Click"  IsEnabled="{Binding IsSynchronized, Mode=OneWay}"/>
+            <Button Name="StepLearningButton"       Content="Krok uczenia"          Click="StepLearning_Click"  IsEnabled="{Binding NeuronButtonsEnabled, Mode=OneWay}"/>
+            <Button Name="EpochLearningButton"      Content="Epoka uczenia"         Click="EpochLearning_Click" IsEnabled="{Binding NeuronButtonsEnabled, Mode=OneWay}"/>
+            <Button Name="AutoLearningButton"       Content="Uczenie automatyczne"  Click="AutoLearning_Click"  IsEnabled="{Binding NeuronButtonsEnabled, Mode=OneWay}"/>
         </StackPanel>
         <StackPanel Orientation="Vertical" Width="200" Grid.Row="1" Grid.Column="0">
-            <Label  Name="LearningCompletedLabel"   Content="Uczenie zakończone!"   Background="GreenYellow" Visibility="Hidden"/>
+            <Label  Name="LearningCompletedLabel"       Content="Uczenie zakończone!"               Background="GreenYellow" Visibility="{Binding VisibilityCompletedLearningMessage}"/>
+            <Label  Name="LearningCompletedTextLabel"   Content="{Binding CompletedLearningText}"   Background="GreenYellow" Visibility="{Binding VisibilityCompletedLearningMessage}"/>
             <Grid ShowGridLines="True">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="60"/>

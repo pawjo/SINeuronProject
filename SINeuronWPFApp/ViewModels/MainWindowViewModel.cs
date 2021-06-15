@@ -31,7 +31,32 @@ namespace SINeuronWPFApp.ViewModels
 
         public Border ActiveBorder { get; set; }
 
-        
+        public Visibility VisibilityCompletedLearningMessage
+        {
+            get
+            {
+                if (Neuron != null && Neuron.CompletedLearning)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Hidden;
+            }
+        }
+
+        public string CompletedLearningText
+        {
+            get
+            {
+                if (Neuron != null)
+                {
+                    if (Neuron.StopConditionErrorTolerance)
+                        return "Osiągnięto maksymalny błąd docelowy.";
+                    else
+                        return "Osiągnięto maksymalną liczbę iteracji.";
+                }
+                else
+                    return null;
+            }
+        }
 
         public double Error
         {
@@ -89,6 +114,18 @@ namespace SINeuronWPFApp.ViewModels
                 if (Neuron.Weights != null)
                     result -= Neuron.Weights[0] / Neuron.Weights[2];
                 return result;
+            }
+        }
+
+        public bool NeuronButtonsEnabled
+        {
+            get
+            {
+                ;
+                if (IsSynchronized && !Neuron.CompletedLearning)
+                    return true;
+                else
+                    return false;
             }
         }
 
@@ -315,6 +352,13 @@ namespace SINeuronWPFApp.ViewModels
             }
         }
 
+        public void CompletedLearningPropertyChanged()
+        {
+            onPropertyChanged(nameof(VisibilityCompletedLearningMessage));
+            onPropertyChanged(nameof(CompletedLearningText));
+            onPropertyChanged(nameof(NeuronButtonsEnabled));
+        }
+
         public void DeletePoint(Border border)
         {
             for (int i = 0; i < UIPoints.Count; i++)
@@ -363,7 +407,7 @@ namespace SINeuronWPFApp.ViewModels
             //Neuron.Weights[0] = -304;
             //Neuron.Weights[1] = 40;
             //Neuron.Weights[2] = 23;
-
+            CompletedLearningPropertyChanged();
             CreateChart();
             IterationPropertyChanged();
             return true;
@@ -374,6 +418,7 @@ namespace SINeuronWPFApp.ViewModels
             Neuron.Reset();
             CreateChart();
             IterationPropertyChanged();
+            onPropertyChanged(nameof(NeuronButtonsEnabled));
         }
 
         public void IterationPropertyChanged()
