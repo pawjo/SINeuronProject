@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SINeuronWPFApp.Models
+namespace SINeuronLibrary
 {
     public interface INeuron
     {

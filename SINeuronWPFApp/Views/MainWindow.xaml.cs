@@ -1,22 +1,9 @@
 ﻿using Microsoft.Win32;
-using SINeuronWPFApp.Models;
 using SINeuronWPFApp.ViewModels;
-using SINeuronWPFApp.Views;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace SINeuronWPFApp.Views
 {
@@ -30,10 +17,8 @@ namespace SINeuronWPFApp.Views
         public MainWindow()
         {
             InitializeComponent();
-            //DataContext = vm = new MainWindowViewModel(new List<ValuePoint>(), SpaceCanvas);
             DataContext = vm = new MainWindowViewModel(SpaceCanvas);
             neuronButtons = new List<Button>();
-            //neuronButtons.Add(InitializeLearningButton);
             neuronButtons.Add(StepLearningButton);
             neuronButtons.Add(EpochLearningButton);
             neuronButtons.Add(AutoLearningButton);
@@ -45,13 +30,6 @@ namespace SINeuronWPFApp.Views
         private void CreateNewPoint_Click(object sender, RoutedEventArgs e)
         {
             vm.AddPoint();
-            //var pointVm = new PointDialogViewModel("Stwórz nowy punkt.");
-            //var window = new PointDialogWindow(pointVm);
-            //window.ShowDialog();
-            //if (pointVm.ChangesSubmitted)
-            //{
-            //    vm.AddPoint(pointVm.Point);
-            //}
         }
 
         private readonly MainWindowViewModel vm;
@@ -177,56 +155,5 @@ namespace SINeuronWPFApp.Views
         }
 
         private string fileDialogFilter = "Zbiór danych Weka (*.arff)|*.arff|Wszystkie pliki (*.*)|*.*";
-
-        //private void Window_KeyDown(object sender, KeyEventArgs e)
-        //{
-        //    var element = vm.UIPoints.Last().Border;
-        //    switch (e.Key)
-        //    {
-        //        case Key.Left:
-        //            vm.MoveElement(element, -20, 0);
-        //            break;
-        //        case Key.Right:
-        //            vm.MoveElement(element, 20, 0);
-        //            break;
-        //        case Key.Up:
-        //            vm.MoveElement(element, 0, 20);
-        //            break;
-        //        case Key.Down:
-        //            vm.MoveElement(element, 0, -20);
-        //            break;
-        //    }
-        //}
-
-        //protected bool isDragging;
-        //private Point clickPosition;
-        //private TranslateTransform originTT;
-
-        //private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        //{
-        //    var draggableControl = sender as UIElement;
-        //    isDragging = true;
-        //    clickPosition = e.GetPosition(SpaceCanvas);
-        //    draggableControl.CaptureMouse();
-        //}
-
-        //private void Canvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        //{
-        //    isDragging = false;
-        //    var draggable = sender as UIElement;
-        //    draggable.ReleaseMouseCapture();
-        //}
-
-        //private void Canvas_MouseMove(object sender, MouseEventArgs e)
-        //{
-        //    var draggableControl = sender as UIElement;
-        //    if (isDragging && draggableControl != null)
-        //    {
-        //        Point currentPosition = e.GetPosition(SpaceCanvas);
-        //        Canvas.SetLeft(draggableControl, currentPosition.X);
-        //        Canvas.SetTop(draggableControl, currentPosition.Y);
-        //    }
-        //}
-
     }
 }

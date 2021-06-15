@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SINeuronWPFApp.Models
+namespace SINeuronLibrary
 {
     public class Perceptron : INeuron
     {

@@ -1,4 +1,4 @@
-﻿namespace SINeuronWPFApp.Models
+﻿namespace SINeuronLibrary
 {
     public class ValuePoint
     {

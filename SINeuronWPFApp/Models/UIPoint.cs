@@ -1,5 +1,4 @@
 ﻿using System.Windows.Controls;
-using System.Windows.Shapes;
 
 namespace SINeuronWPFApp.Models
 {
@@ -9,12 +8,4 @@ namespace SINeuronWPFApp.Models
 
         public TextBlock TextBlock { get; set; }
     }
-    //public class UIPoint
-    //{
-    //    public Canvas Canvas { get; set; }
-
-    //    public Ellipse Ellipse { get; set; }
-
-    //    public Label Label { get; set; }
-    //}
 }

@@ -1,5 +1,4 @@
-using SINeuronWPFApp.Models;
-using System;
+using SINeuronLibrary;
 using System.Collections.Generic;
 using Xunit;
 
