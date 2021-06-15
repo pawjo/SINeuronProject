@@ -1,4 +1,5 @@
-﻿using SINeuronWPFApp.Models;
+﻿using Microsoft.Win32;
+using SINeuronWPFApp.Models;
 using SINeuronWPFApp.ViewModels;
 using SINeuronWPFApp.Views;
 using System;
@@ -154,6 +155,15 @@ namespace SINeuronWPFApp.Views
                 LearningCompletedLabel.Visibility = Visibility.Visible;
 
             vm.IterationPropertyChanged();
+        }
+
+        private void SaveData_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new SaveFileDialog();
+            dialog.DefaultExt = "arff";
+            dialog.Filter = "Zbiór danych Weka (*.arff)|*.arff|Wszystkie pliki (*.*)|*.*";
+            if (dialog.ShowDialog() == true)
+                vm.SaveSet(dialog.FileName);
         }
 
 

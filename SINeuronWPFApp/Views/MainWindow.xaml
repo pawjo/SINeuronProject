@@ -7,11 +7,12 @@
         xmlns:cfg="clr-namespace:SINeuronWPFApp"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Width="800" Height="425">
+        Title="Neuron" Width="800" Height="425">
     <!--<Grid Margin="0,12,0,-12">-->
     <DockPanel>
         <!--<StackPanel Orientation="Horizontal" Height="25" Margin="10,10,-10,399">-->
         <StackPanel Orientation="Horizontal" Height="25" DockPanel.Dock="Top">
+            <Button Name="SaveDataButton"           Content="Zapisz zestaw danych"  Click="SaveData_Click"/>
             <Button Name="CreateNewPointButton"     Content="Utwórz nowy punkt"     Click="CreateNewPoint_Click"/>
             <Button Name="EditPointButton"          Content="Edytuj punkt"          Click="EditPoint_Click"/>
             <Button Name="DeletePointButton"        Content="Usuń punkt"            Click="DeletePoint_Click"/>

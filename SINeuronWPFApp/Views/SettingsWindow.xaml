@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SINeuronWPFApp.Views"
         mc:Ignorable="d"
-        Title="SettingsWindow" Height="250" Width="400">
+        Title="Ustawienia" Height="250" Width="400">
     <Grid>
         <StackPanel Orientation="Vertical">
         <Label Content="Ustawienia" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"/>

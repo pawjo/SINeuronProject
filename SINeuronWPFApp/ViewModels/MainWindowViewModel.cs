@@ -1,4 +1,5 @@
-﻿using LiveCharts;
+﻿using ArffTools;
+using LiveCharts;
 using LiveCharts.Wpf;
 using SINeuronWPFApp.Models;
 using SINeuronWPFApp.Views;
@@ -102,14 +103,44 @@ namespace SINeuronWPFApp.ViewModels
             createPoint(new ValuePoint { X = -60, Y = 10, Value = 1 });
             createPoint(new ValuePoint { X = 50, Y = -50, Value = 1 });
 
-            createPoint(new ValuePoint { X = 20, Y = 80, Value = -1 });
-            createPoint(new ValuePoint { X = 50, Y = 120, Value = -1 });
-            createPoint(new ValuePoint { X = 50, Y = 60, Value = -1 });
-            createPoint(new ValuePoint { X = 10, Y = 20, Value = -1 });
-            createPoint(new ValuePoint { X = 60, Y = 140, Value = -1 });
+            createPoint(new ValuePoint { X = 20, Y = 80,    Value = -1 });
+            createPoint(new ValuePoint { X = 50, Y = 120,   Value = -1 });
+            createPoint(new ValuePoint { X = 50, Y = 60,    Value = -1 });
+            createPoint(new ValuePoint { X = 10, Y = 20,    Value = -1 });
+            createPoint(new ValuePoint { X = 60, Y = 140,   Value = -1 });
         }
 
+        public void SaveSet(string path)
+        {
+            if (!IsSynchronized)
+                Synchronize();
 
+            try
+            {
+                using( var writer = new ArffWriter(path))
+                {
+                    writer.WriteRelationName("Point");
+                    writer.WriteAttribute(new ArffAttribute("x", ArffAttributeType.Numeric));
+                    writer.WriteAttribute(new ArffAttribute("y", ArffAttributeType.Numeric));
+                    writer.WriteAttribute(new ArffAttribute("value", ArffAttributeType.Nominal("-1","1")));
+
+                    foreach (var item in TrainingSet)
+                    {
+                        int val = (item.Value == 1) ? 1 : 0;
+                        writer.WriteInstance(new object[] { item.X, item.Y, val });
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                new Notification(exc.Message).ShowDialog();
+            }
+        }
+
+        public void OpenSet()
+        {
+
+        }
 
         public void CreateChart()
         {
