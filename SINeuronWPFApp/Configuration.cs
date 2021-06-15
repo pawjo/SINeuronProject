@@ -31,5 +31,8 @@ namespace SINeuronWPFApp
 
         public static double SpaceCanvasYOffset = 200;
 
+        public static double LineLength = 1500;
+
+        public static double LineOffset = SpaceCanvasWidth / 2 - LineLength / 2;
     }
 }

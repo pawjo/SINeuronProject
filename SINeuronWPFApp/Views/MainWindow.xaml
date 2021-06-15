@@ -7,11 +7,33 @@
         xmlns:cfg="clr-namespace:SINeuronWPFApp"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
-        Title="Neuron" Width="800" Height="425">
-    <!--<Grid Margin="0,12,0,-12">-->
-    <DockPanel>
-        <!--<StackPanel Orientation="Horizontal" Height="25" Margin="10,10,-10,399">-->
-        <StackPanel Orientation="Horizontal" Height="25" DockPanel.Dock="Top">
+        Title="Neuron" Width="1000" Height="500">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Canvas Name="SpaceCanvas" Background="AliceBlue" Width="{x:Static cfg:Configuration.SpaceCanvasWidth}" Height="{x:Static cfg:Configuration.SpaceCanvasHeight}" Grid.Row="1" Grid.Column="1">
+            <Rectangle Name="XAxis" Height="2" Width="700" Fill="{x:Static cfg:Configuration.AxesBrush}" Canvas.Left="0" Canvas.Top="200"/>
+            <Rectangle Name="YAxis" Height="400" Width="2" Fill="{x:Static cfg:Configuration.AxesBrush}" Canvas.Left="350" Canvas.Top="0"/>
+            <Rectangle Fill="Black" Height="2" Width="{x:Static cfg:Configuration.LineLength}" Canvas.Bottom="{Binding LineY}" Canvas.Left="{x:Static cfg:Configuration.LineOffset}" RenderTransformOrigin="0.5,0.5">
+                <Rectangle.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="{Binding LineAngle}"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Rectangle.RenderTransform>
+            </Rectangle>
+        </Canvas>
+        <Rectangle Fill="LightGray" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"/>
+        <Rectangle Fill="LightGray" Grid.Column="0" Grid.Row="1"/>
+        <StackPanel Orientation="Horizontal" Height="25" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
             <Button Name="SaveDataButton"           Content="Zapisz zestaw danych"  Click="SaveData_Click"/>
             <Button Name="OpenDataButton"           Content="Wczytaj zestaw danych"  Click="OpenData_Click"/>
             <Button Name="CreateNewPointButton"     Content="Utwórz nowy punkt"     Click="CreateNewPoint_Click"/>
@@ -21,15 +43,10 @@
             <Button Name="StepLearningButton"       Content="Krok uczenia"          Click="StepLearning_Click"/>
             <Button Name="EpochLearningButton"      Content="Epoka uczenia"         Click="EpochLearning_Click"/>
             <Button Name="AutoLearningButton"       Content="Uczenie automatyczne"  Click="AutoLearning_Click"/>
-            <Label  Name="LearningCompletedLabel"   Content="Uczenie zakończone!"   Background="GreenYellow" Visibility="Hidden"/>
             <Button Name="SettingsButton"           Content="Ustawienia"            Click="Settings_Click"/>
         </StackPanel>
-        <!--<Button Content="Test" Canvas.Left="288" Canvas.Top="30" Click="Test_click" Margin="429,20,300,357"/>-->
-
-
-        <!--<StackPanel Orientation="Vertical" Height="300" Margin="10,52,643,82">-->
-
-        <StackPanel Orientation="Vertical" Width="200" DockPanel.Dock="Left">
+        <StackPanel Orientation="Vertical" Width="200" Grid.Row="1" Grid.Column="0">
+            <Label  Name="LearningCompletedLabel"   Content="Uczenie zakończone!"   Background="GreenYellow" Visibility="Hidden"/>
             <Grid ShowGridLines="True">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="60"/>
@@ -52,8 +69,6 @@
                 <Label Name="IterationValueLabel"   Grid.Column="1" Grid.Row="3" Content="{Binding Iteration, Mode=OneWay}"/>
                 <Label Name="ErrorLabel"            Grid.Column="0" Grid.Row="4" Content="Aktualny błąd"/>
                 <Label Name="ErrorValueLabel"       Grid.Column="1" Grid.Row="4" Content="{Binding Error, Mode=OneWay}"/>
-                <!--<Label Name="w2Label"       Grid.Column="0" Grid.Row="2" Content="w2"/>
-                <Label Name="w2ValueLabel"  Grid.Column="1" Grid.Row="2" Content="{Binding Weight2, Mode=OneWay}"/>-->
             </Grid>
 
             <Label Name="ErrorChartLabel" Content="Wykres błędu uczenia"/>
@@ -65,63 +80,7 @@
                     <lvc:Axis Title="Epoka" Labels="{Binding Labels}" Unit="1"/>
                 </lvc:CartesianChart.AxisX>
             </lvc:CartesianChart>
-
-            <!--<Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="60"/>
-                </Grid.ColumnDefinitions>
-                <Label Content="Id" Grid.Column="0"/>
-                <Label Content="X" Grid.Column="1"/>
-                <Label Content="Y" Grid.Column="2"/>
-                <Label Content="Wartość" Grid.Column="3"/>
-            </Grid>
-            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                <ItemsControl Name="PointList">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="60"/>
-                                </Grid.ColumnDefinitions>
-                                <Label Content="{Binding }" Grid.Column="0"/>
-                                <Label Content="X" Grid.Column="1"/>
-                                <Label Content="Y" Grid.Column="2"/>
-                                <Label Content="Wartość" Grid.Column="3"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>-->
-
         </StackPanel>
-        <Canvas Name="SpaceCanvas" Background="AliceBlue" Width="{x:Static cfg:Configuration.SpaceCanvasWidth}" Height="{x:Static cfg:Configuration.SpaceCanvasHeight}">
-            <Rectangle Name="XAxis" Height="2" Width="700" Fill="{x:Static cfg:Configuration.AxesBrush}" Canvas.Left="0" Canvas.Top="200"/>
-            <Rectangle Name="YAxis" Height="400" Width="2" Fill="{x:Static cfg:Configuration.AxesBrush}" Canvas.Left="350" Canvas.Top="0"/>
-            <!--<Canvas Background="Aquamarine" Height="20" Width="20" Canvas.Bottom="0" Canvas.Left="0">
-                <Ellipse Height="20" Width="20" Stroke="Black" StrokeThickness="1"/>
-                <Label Content="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-
-            </Canvas>-->
-
-            <!--<Border Name="testBorder" CornerRadius="60" Width="20" Height="20" Background="Aquamarine" BorderBrush="Black" BorderThickness="1" MouseLeftButtonUp="Canvas_MouseLeftButtonUp" MouseLeftButtonDown="Canvas_MouseLeftButtonDown" MouseMove="Canvas_MouseMove">
-                <TextBlock HorizontalAlignment="Center" Text="-1" />
-            </Border>-->
-            <Rectangle Fill="Black" Height="2" Width="700" Canvas.Bottom="{Binding LineY}" Canvas.Left="0" RenderTransformOrigin="0.5,0.5">
-                <Rectangle.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="{Binding LineAngle}"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </Rectangle.RenderTransform>
-            </Rectangle>
-        </Canvas>
-    </DockPanel>
+        
+    </Grid>
 </Window>

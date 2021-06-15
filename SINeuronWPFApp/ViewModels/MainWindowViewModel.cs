@@ -17,6 +17,17 @@ namespace SINeuronWPFApp.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        public MainWindowViewModel(Canvas spaceCanvas)
+        {
+            createPerceptron();
+            SpaceCanvas = spaceCanvas;
+            SpaceCanvas.MouseLeftButtonDown += new MouseButtonEventHandler(SpaceCanvas_MouseDown);
+            TrainingSet = new List<ValuePoint>();
+            UIPoints = new List<UIPoint>();
+            createAxesLabels();
+            CreateChart();
+        }
+
         public Border ActiveBorder { get; set; }
 
         public double Error
@@ -70,11 +81,13 @@ namespace SINeuronWPFApp.ViewModels
 
         public INeuron Neuron { get; set; }
 
-        public List<UIPoint> UIPoints { get; set; }
+        public SeriesCollection SeriesCollection { get; set; }
+        
+        public Canvas SpaceCanvas { get; set; }
 
         public List<ValuePoint> TrainingSet { get; set; }
 
-        public Canvas SpaceCanvas { get; set; }
+        public List<UIPoint> UIPoints { get; set; }
 
         public double Weight0 { get => getWeight(0); }
 
@@ -83,71 +96,8 @@ namespace SINeuronWPFApp.ViewModels
         public double Weight2 { get => getWeight(2); }
 
 
-
-        public SeriesCollection SeriesCollection { get; set; }
-
-        public string[] Labels { get; set; }
-
-        public Func<double, string> YFormatter { get; set; }
-
-        public double MaxValueY { get; set; }
-
-
-
-        public MainWindowViewModel(Canvas spaceCanvas)
-        {
-            createPerceptron();
-            SpaceCanvas = spaceCanvas;
-            SpaceCanvas.MouseLeftButtonDown += new MouseButtonEventHandler(SpaceCanvas_MouseDown);
-            TrainingSet = new List<ValuePoint>();
-            UIPoints = new List<UIPoint>();
-            createAxesLabels();
-            CreateExampleSet2();
-            CreateChart();
-        }
-
-        private void CreateExampleSet2()
-        {
-            createPoint(new ValuePoint { X = -80, Y = 30, Value = 1 });
-            createPoint(new ValuePoint { X = -90, Y = 50, Value = 1 });
-            createPoint(new ValuePoint { X = -50, Y = 0, Value = 1 });
-            createPoint(new ValuePoint { X = -60, Y = 10, Value = 1 });
-            createPoint(new ValuePoint { X = 50, Y = -50, Value = 1 });
-
-            createPoint(new ValuePoint { X = 20, Y = 80,    Value = -1 });
-            createPoint(new ValuePoint { X = 50, Y = 120,   Value = -1 });
-            createPoint(new ValuePoint { X = 50, Y = 60,    Value = -1 });
-            createPoint(new ValuePoint { X = 10, Y = 20,    Value = -1 });
-            createPoint(new ValuePoint { X = 60, Y = 140,   Value = -1 });
-        }
-
-        public void SaveSet(string path)
-        {
-            if (!IsSynchronized)
-                Synchronize();
-
-            try
-            {
-                using( var writer = new ArffWriter(path))
-                {
-                    writer.WriteRelationName("Point");
-                    writer.WriteAttribute(new ArffAttribute("x", ArffAttributeType.Numeric));
-                    writer.WriteAttribute(new ArffAttribute("y", ArffAttributeType.Numeric));
-                    writer.WriteAttribute(new ArffAttribute("value", ArffAttributeType.Nominal("-1","1")));
-
-                    foreach (var item in TrainingSet)
-                    {
-                        int val = (item.Value == 1) ? 1 : 0;
-                        writer.WriteInstance(new object[] { item.X, item.Y, val });
-                    }
-                }
-            }
-            catch (Exception exc)
-            {
-                new Notification(exc.Message).ShowDialog();
-            }
-        }
-
+        //=================================================
+        // Obsluga plikow
         public void OpenSet(string path)
         {
             clearUIPoints();
@@ -175,19 +125,49 @@ namespace SINeuronWPFApp.ViewModels
                 new Notification(exc.Message).ShowDialog();
             }
         }
+        
+        public void SaveSet(string path)
+        {
+            if (!IsSynchronized)
+                Synchronize();
+
+            try
+            {
+                using( var writer = new ArffWriter(path))
+                {
+                    writer.WriteRelationName("Point");
+                    writer.WriteAttribute(new ArffAttribute("x", ArffAttributeType.Numeric));
+                    writer.WriteAttribute(new ArffAttribute("y", ArffAttributeType.Numeric));
+                    writer.WriteAttribute(new ArffAttribute("value", ArffAttributeType.Nominal("-1","1")));
+
+                    foreach (var item in TrainingSet)
+                    {
+                        int val = (item.Value == 1) ? 1 : 0;
+                        writer.WriteInstance(new object[] { item.X, item.Y, val });
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                new Notification(exc.Message).ShowDialog();
+            }
+        }
+        //=================================================
+
+
+        //=================================================
+        // Do wykresu
+        public string[] Labels { get; set; }
+
+        public Func<double, string> YFormatter { get; set; }
+
+        public double MaxValueY { get; set; }
 
         public void CreateChart()
         {
             List<double> values = Neuron.ErrorLog;
             if (values == null)
                 values = new List<double>();
-            //if (values.Count == 0)
-            //{
-            //    values.Add(0);
-            //    MaxValueY = 10;
-            //}
-            //else
-            //    MaxValueY = values.Max();
 
             SeriesCollection = new SeriesCollection
             {
@@ -205,184 +185,8 @@ namespace SINeuronWPFApp.ViewModels
 
             YFormatter = value => value.ToString();
 
-
-
             onPropertyChanged(nameof(SeriesCollection));
             onPropertyChanged(nameof(Labels));
-        }
-
-        private void createPoint(ValuePoint point)
-        {
-            TrainingSet.Add(point);
-            var uiPoint = createUIPoint(point);
-            UIPoints.Add(uiPoint);
-        }
-
-        public void AddPoint()
-        {
-            var point = OpenPointDialogWindow("Dodaj nowy punkt.");
-            if (point != null)
-            {
-                TrainingSet.Add(point);
-                var uiPoint = createUIPoint(point);
-                UIPoints.Add(uiPoint);
-            }
-        }
-
-        public void DeletePoint(Border border)
-        {
-            for (int i = 0; i < UIPoints.Count; i++)
-            {
-                if (UIPoints[i].Border == border)
-                {
-                    SpaceCanvas.Children.Remove(border);
-                    UIPoints.RemoveAt(i);
-                    TrainingSet.RemoveAt(i);
-                    return;
-                }
-            }
-        }
-
-        public void EditPoint(Border border)
-        {
-            var oldPoint = createValuePoint(border);
-            if (oldPoint == null)
-                return;
-            var point = OpenPointDialogWindow("Edytuj punkt.", oldPoint);
-            if (point != null)
-            {
-                if (oldPoint.X != point.X || oldPoint.Y != point.Y)
-                    SetBorderCanvasPosition(border, point.X, point.Y);
-                if (oldPoint.Value != point.Value)
-                {
-                    var textBlock = border.Child as TextBlock;
-                    if (textBlock != null)
-                        textBlock.Text = point.Value.ToString();
-                }
-            }
-        }
-
-        public bool InitializeNeuron()
-        {
-            if (UIPoints.Count < 2)
-                return false;
-            if (!IsSynchronized)
-                Synchronize();
-
-            Neuron.Initialize(TrainingSet);
-            //Neuron.Weights[0] = -304;
-            //Neuron.Weights[1] = 40;
-            //Neuron.Weights[2] = 23;
-
-            CreateChart();
-            IterationPropertyChanged();
-            return true;
-        }
-
-        public void IterationPropertyChanged()
-        {
-            onPropertyChanged(nameof(Error));
-            onPropertyChanged(nameof(Iteration));
-            onPropertyChanged(nameof(LineAngle));
-            onPropertyChanged(nameof(LineY));
-            onPropertyChanged(nameof(Weight0));
-            onPropertyChanged(nameof(Weight1));
-            onPropertyChanged(nameof(Weight2));
-        }
-
-        public void MoveElement(UIElement element, double dx, double dy)
-        {
-            Canvas.SetLeft(element, Canvas.GetLeft(element) + dx);
-            Canvas.SetTop(element, Canvas.GetTop(element) + dy);
-        }
-
-        public void Settings()
-        {
-            var settingsVm = new SettingsViewModel
-            {
-                ErrorTolerance = Neuron.ErrorTolerance,
-                IterationMax = Neuron.IterationMax,
-                IterationWarning = Neuron.IterationWarning,
-                StopConditionErrorTolerance = Neuron.StopConditionErrorTolerance
-            };
-
-            var settingsWindow = new SettingsWindow(settingsVm);
-            settingsWindow.ShowDialog();
-            if (settingsVm.ChangesSubmitted)
-            {
-                Neuron.ErrorTolerance = settingsVm.ErrorTolerance;
-                Neuron.IterationMax = settingsVm.IterationMax;
-                Neuron.IterationWarning = settingsVm.IterationWarning;
-                Neuron.StopConditionErrorTolerance = settingsVm.StopConditionErrorTolerance;
-            }
-        }
-
-        public void Synchronize()
-        {
-            TrainingSet.Clear();
-            foreach (var item in UIPoints)
-            {
-                TrainingSet.Add(createValuePoint(item.Border));
-            }
-            IsSynchronized = true;
-        }
-
-        private bool isDragging;
-        private Point beforeMouseMove;
-
-        private void activateBorder(Border border)
-        {
-            if (ActiveBorder != null)
-                deactivateBorder();
-            ActiveBorder = border;
-            border.BorderBrush = Configuration.ActivePointBorderBrush;
-            border.Background = Configuration.ActivePointBackgroundBrush;
-        }
-
-        private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ClickCount == 2)
-            {
-                EditPoint(sender as Border);
-            }
-            else if (e.ClickCount == 1)
-            {
-                var border = sender as Border;
-                activateBorder(border);
-                isDragging = true;
-                beforeMouseMove = e.GetPosition(SpaceCanvas);
-                border.CaptureMouse();
-            }
-        }
-
-        private void Border_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            isDragging = false;
-            var border = sender as Border;
-            border.ReleaseMouseCapture();
-        }
-
-
-        private void Border_MouseMove(object sender, MouseEventArgs e)
-        {
-            var border = sender as Border;
-            if (isDragging && border != null)
-            {
-                IsSynchronized = false;
-                Point currentPosition = e.GetPosition(SpaceCanvas);
-                double dx = currentPosition.X - beforeMouseMove.X;
-                double dy = currentPosition.Y - beforeMouseMove.Y;
-                MoveElement(border, dx, dy);
-                beforeMouseMove = currentPosition;
-            }
-        }
-
-        private void clearUIPoints()
-        {
-            foreach (var item in UIPoints)
-                SpaceCanvas.Children.Remove(item.Border);
-            UIPoints.Clear();
-            TrainingSet.Clear();
         }
 
         private void createAxesLabels()
@@ -463,6 +267,182 @@ namespace SINeuronWPFApp.ViewModels
                 Canvas.SetTop(sp, Configuration.SpaceCanvasYOffset - 12 - val);
             }
         }
+        //==================================================
+
+
+        
+
+        public void AddPoint()
+        {
+            var point = openPointDialogWindow("Dodaj nowy punkt.");
+            if (point != null)
+            {
+                TrainingSet.Add(point);
+                var uiPoint = createUIPoint(point);
+                UIPoints.Add(uiPoint);
+            }
+        }
+
+        public void DeletePoint(Border border)
+        {
+            for (int i = 0; i < UIPoints.Count; i++)
+            {
+                if (UIPoints[i].Border == border)
+                {
+                    SpaceCanvas.Children.Remove(border);
+                    UIPoints.RemoveAt(i);
+                    TrainingSet.RemoveAt(i);
+                    return;
+                }
+            }
+        }
+
+        public void EditPoint(Border border)
+        {
+            var oldPoint = createValuePoint(border);
+            if (oldPoint == null)
+                return;
+            var point = openPointDialogWindow("Edytuj punkt.", oldPoint);
+            if (point != null)
+            {
+                if (oldPoint.X != point.X || oldPoint.Y != point.Y)
+                    setBorderCanvasPosition(border, point.X, point.Y);
+                if (oldPoint.Value != point.Value)
+                {
+                    var textBlock = border.Child as TextBlock;
+                    if (textBlock != null)
+                        textBlock.Text = point.Value.ToString();
+                }
+            }
+        }
+
+        public bool InitializeNeuron()
+        {
+            if (UIPoints.Count < 2)
+                return false;
+            if (!IsSynchronized)
+                Synchronize();
+
+            Neuron.Initialize(TrainingSet);
+            //Neuron.Weights[0] = -304;
+            //Neuron.Weights[1] = 40;
+            //Neuron.Weights[2] = 23;
+
+            CreateChart();
+            IterationPropertyChanged();
+            return true;
+        }
+
+        public void IterationPropertyChanged()
+        {
+            onPropertyChanged(nameof(Error));
+            onPropertyChanged(nameof(Iteration));
+            onPropertyChanged(nameof(LineAngle));
+            onPropertyChanged(nameof(LineY));
+            onPropertyChanged(nameof(Weight0));
+            onPropertyChanged(nameof(Weight1));
+            onPropertyChanged(nameof(Weight2));
+        }
+
+        public void MoveElement(UIElement element, double dx, double dy)
+        {
+            Canvas.SetLeft(element, Canvas.GetLeft(element) + dx);
+            Canvas.SetTop(element, Canvas.GetTop(element) + dy);
+        }
+
+        public void Settings()
+        {
+            var settingsVm = new SettingsViewModel
+            {
+                ErrorTolerance = Neuron.ErrorTolerance,
+                IterationMax = Neuron.IterationMax,
+                IterationWarning = Neuron.IterationWarning,
+                StopConditionErrorTolerance = Neuron.StopConditionErrorTolerance
+            };
+
+            var settingsWindow = new SettingsWindow(settingsVm);
+            settingsWindow.ShowDialog();
+            if (settingsVm.ChangesSubmitted)
+            {
+                Neuron.ErrorTolerance = settingsVm.ErrorTolerance;
+                Neuron.IterationMax = settingsVm.IterationMax;
+                Neuron.IterationWarning = settingsVm.IterationWarning;
+                Neuron.StopConditionErrorTolerance = settingsVm.StopConditionErrorTolerance;
+            }
+        }
+
+        public void Synchronize()
+        {
+            TrainingSet.Clear();
+            foreach (var item in UIPoints)
+            {
+                TrainingSet.Add(createValuePoint(item.Border));
+            }
+            IsSynchronized = true;
+        }
+
+
+        //=================================================
+        //Przeciąganie elementow
+        private bool isDragging;
+        private Point beforeMouseMove;
+
+        private void activateBorder(Border border)
+        {
+            if (ActiveBorder != null)
+                deactivateBorder();
+            ActiveBorder = border;
+            border.BorderBrush = Configuration.ActivePointBorderBrush;
+            border.Background = Configuration.ActivePointBackgroundBrush;
+        }
+
+        private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2)
+            {
+                EditPoint(sender as Border);
+            }
+            else if (e.ClickCount == 1)
+            {
+                var border = sender as Border;
+                activateBorder(border);
+                isDragging = true;
+                beforeMouseMove = e.GetPosition(SpaceCanvas);
+                border.CaptureMouse();
+            }
+        }
+
+        private void Border_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            isDragging = false;
+            var border = sender as Border;
+            border.ReleaseMouseCapture();
+        }
+
+
+        private void Border_MouseMove(object sender, MouseEventArgs e)
+        {
+            var border = sender as Border;
+            if (isDragging && border != null)
+            {
+                IsSynchronized = false;
+                Point currentPosition = e.GetPosition(SpaceCanvas);
+                double dx = currentPosition.X - beforeMouseMove.X;
+                double dy = currentPosition.Y - beforeMouseMove.Y;
+                MoveElement(border, dx, dy);
+                beforeMouseMove = currentPosition;
+            }
+        }
+        //=================================================
+        
+
+        private void clearUIPoints()
+        {
+            foreach (var item in UIPoints)
+                SpaceCanvas.Children.Remove(item.Border);
+            UIPoints.Clear();
+            TrainingSet.Clear();
+        }
 
         private void createPerceptron()
         {
@@ -476,10 +456,17 @@ namespace SINeuronWPFApp.ViewModels
             };
         }
 
+        private void createPoint(ValuePoint point)
+        {
+            TrainingSet.Add(point);
+            var uiPoint = createUIPoint(point);
+            UIPoints.Add(uiPoint);
+        }
+
         private UIPoint createUIPoint(ValuePoint point)
         {
             var border = new Border();
-            SetBorderCanvasPosition(border, point.X, point.Y);
+            setBorderCanvasPosition(border, point.X, point.Y);
             border.Width = Configuration.PointSize;
             border.Height = Configuration.PointSize;
             border.BorderBrush = Configuration.PointBorderBrush;
@@ -505,9 +492,6 @@ namespace SINeuronWPFApp.ViewModels
 
         private ValuePoint createValuePoint(Border border)
         {
-            //double x = Canvas.GetLeft(border) - Configuration.SpaceCanvasXOffset + Configuration.PointOffset;
-            //double y = SpaceCanvas.Height - Canvas.GetTop(border) - Configuration.SpaceCanvasYOffset - Configuration.PointOffset;
-
             double x = Canvas.GetLeft(border) - SpaceCanvas.Width / 2 + Configuration.PointOffset;
             double y = SpaceCanvas.Height / 2 - Canvas.GetTop(border) - Configuration.PointOffset;
 
@@ -540,7 +524,7 @@ namespace SINeuronWPFApp.ViewModels
             else return 0;
         }
 
-        private ValuePoint OpenPointDialogWindow(string text, ValuePoint point = null)
+        private ValuePoint openPointDialogWindow(string text, ValuePoint point = null)
         {
             var pointVm = new PointDialogViewModel(text, point);
             var window = new PointDialogWindow(pointVm);
@@ -551,11 +535,9 @@ namespace SINeuronWPFApp.ViewModels
                 return null;
         }
 
-        private void SetBorderCanvasPosition(Border border, double left, double bottom)
+        private void setBorderCanvasPosition(Border border, double left, double bottom)
         {
             double offset = Configuration.PointOffset;
-            //Canvas.SetLeft(border, x - offset + Configuration.SpaceCanvasXOffset);
-            //Canvas.SetTop(border, y - offset - Configuration.SpaceCanvasYOffset);
 
             Canvas.SetLeft(border, left - offset + SpaceCanvas.Width / 2);
             Canvas.SetTop(border, SpaceCanvas.Height / 2 - bottom - offset);
