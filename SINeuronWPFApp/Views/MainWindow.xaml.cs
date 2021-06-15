@@ -22,7 +22,7 @@ namespace SINeuronWPFApp.Views
             neuronButtons.Add(StepLearningButton);
             neuronButtons.Add(EpochLearningButton);
             neuronButtons.Add(AutoLearningButton);
-            disableNeuronButtons();
+            //disableNeuronButtons();
         }
 
 
@@ -33,12 +33,6 @@ namespace SINeuronWPFApp.Views
         }
 
         private readonly MainWindowViewModel vm;
-
-        private void Test_click(object sender, RoutedEventArgs e)
-        {
-            vm.Synchronize();
-            ;
-        }
 
         private void DeletePoint_Click(object sender, RoutedEventArgs e)
         {
@@ -70,8 +64,9 @@ namespace SINeuronWPFApp.Views
         private void InitializeLearning_Click(object sender, RoutedEventArgs e)
         {
             LearningCompletedLabel.Visibility = Visibility.Hidden;
-            if (vm.InitializeNeuron())
-                enableNeuronButtons();
+            //if (vm.InitializeNeuron())
+            //    enableNeuronButtons();
+            vm.InitializeNeuron();
         }
 
         private void StepLearning_Click(object sender, RoutedEventArgs e)
@@ -135,25 +130,52 @@ namespace SINeuronWPFApp.Views
             vm.IterationPropertyChanged();
         }
 
-        private void SaveData_Click(object sender, RoutedEventArgs e)
+        private string fileDialogFilterArff = "Zbiór danych Weka (*.arff)|*.arff|Wszystkie pliki (*.*)|*.*";
+        
+        private string fileDialogFilterJson = "Plik json (*.json)|*.json|Wszystkie pliki (*.*)|*.*";
+        
+        private void Menu_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            var dialog = new SaveFileDialog();
-            dialog.DefaultExt = "arff";
-            dialog.Filter = fileDialogFilter;
-            if (dialog.ShowDialog() == true)
-                vm.SaveSet(dialog.FileName);
+            var image = sender as Image;
+            var contextMenu = image.ContextMenu;
+            contextMenu.PlacementTarget = image;
+            contextMenu.IsOpen = true;
         }
-
-
+        
         private void OpenData_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new OpenFileDialog();
             dialog.DefaultExt = "arff";
-            dialog.Filter = fileDialogFilter;
+            dialog.Filter = fileDialogFilterArff;
             if (dialog.ShowDialog() == true)
                 vm.OpenSet(dialog.FileName);
         }
+        
+        private void SaveData_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new SaveFileDialog();
+            dialog.DefaultExt = "arff";
+            dialog.Filter = fileDialogFilterArff;
+            if (dialog.ShowDialog() == true)
+                vm.SaveSet(dialog.FileName);
+        }
 
-        private string fileDialogFilter = "Zbiór danych Weka (*.arff)|*.arff|Wszystkie pliki (*.*)|*.*";
+        private void OpenAppState_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFileDialog();
+            dialog.DefaultExt = "json";
+            dialog.Filter = fileDialogFilterJson;
+            if (dialog.ShowDialog() == true)
+                vm.OpenAppState(dialog.FileName);
+        }
+
+        private void SaveAppState_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new SaveFileDialog();
+            dialog.DefaultExt = "json";
+            dialog.Filter = fileDialogFilterJson;
+            if (dialog.ShowDialog() == true)
+                vm.SaveAppState(dialog.FileName);
+        }
     }
 }

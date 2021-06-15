@@ -6,7 +6,9 @@ using SINeuronWPFApp.Models;
 using SINeuronWPFApp.Views;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -29,6 +31,8 @@ namespace SINeuronWPFApp.ViewModels
 
         public Border ActiveBorder { get; set; }
 
+        
+
         public double Error
         {
             get
@@ -40,7 +44,17 @@ namespace SINeuronWPFApp.ViewModels
             }
         }
 
-        public bool IsSynchronized { get; set; }
+        public bool IsSynchronized
+        {
+            get => isSynchronized;
+            set
+            {
+                isSynchronized = value;
+                onPropertyChanged(nameof(IsSynchronized));
+            }
+        }
+
+        private bool isSynchronized;
 
         public int Iteration
         {
@@ -128,8 +142,7 @@ namespace SINeuronWPFApp.ViewModels
         
         public void SaveSet(string path)
         {
-            if (!IsSynchronized)
-                Synchronize();
+            Synchronize();
 
             try
             {
@@ -151,6 +164,24 @@ namespace SINeuronWPFApp.ViewModels
             {
                 new Notification(exc.Message).ShowDialog();
             }
+        }
+
+        public void OpenAppState(string path)
+        {
+            string json = File.ReadAllText(path);
+            Neuron = JsonSerializer.Deserialize<Perceptron>(json);
+            IterationPropertyChanged();
+            if (TrainingSet.Count == UIPoints.Count)
+            {
+                CreateChart();
+                IsSynchronized = true;
+            }
+        }
+
+        public void SaveAppState(string path)
+        {
+            string json = JsonSerializer.Serialize(Neuron);
+            File.WriteAllText(path, json);
         }
         //=================================================
 
@@ -325,8 +356,8 @@ namespace SINeuronWPFApp.ViewModels
         {
             if (UIPoints.Count < 2)
                 return false;
-            if (!IsSynchronized)
-                Synchronize();
+
+            Synchronize();
 
             Neuron.Initialize(TrainingSet);
             //Neuron.Weights[0] = -304;
@@ -386,12 +417,15 @@ namespace SINeuronWPFApp.ViewModels
 
         public void Synchronize()
         {
-            TrainingSet.Clear();
-            foreach (var item in UIPoints)
+            if (!IsSynchronized)
             {
-                TrainingSet.Add(createValuePoint(item.Border));
+                TrainingSet.Clear();
+                foreach (var item in UIPoints)
+                {
+                    TrainingSet.Add(createValuePoint(item.Border));
+                }
+                IsSynchronized = true;
             }
-            IsSynchronized = true;
         }
 
 

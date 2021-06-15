@@ -34,16 +34,26 @@
         <Rectangle Fill="LightGray" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"/>
         <Rectangle Fill="LightGray" Grid.Column="0" Grid.Row="1"/>
         <StackPanel Orientation="Horizontal" Height="25" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
-            <Button Name="SaveDataButton"           Content="Zapisz zestaw danych"  Click="SaveData_Click"/>
-            <Button Name="OpenDataButton"           Content="Wczytaj zestaw danych"  Click="OpenData_Click"/>
+            <Image Source="/ikona1.png" MouseLeftButtonDown="Menu_Click">
+                <Image.ContextMenu>
+                    <ContextMenu Name="Opcje">
+                        <MenuItem Header="Wczytaj zestaw danych"    Click="OpenData_Click"/>
+                        <MenuItem Header="Zapisz zestaw danych"     Click="SaveData_Click"/>
+                        <Separator/>
+                        <MenuItem Header="Wczytaj stan aplikacji"   Click="OpenAppState_Click"/>
+                        <MenuItem Header="Zapisz stan aplikacji"    Click="SaveAppState_Click"/>
+                        <Separator/>
+                        <MenuItem Header="Ustawienia"               Click="Settings_Click"/>
+                    </ContextMenu>
+                </Image.ContextMenu>
+            </Image>
             <Button Name="CreateNewPointButton"     Content="Utwórz nowy punkt"     Click="CreateNewPoint_Click"/>
             <Button Name="EditPointButton"          Content="Edytuj punkt"          Click="EditPoint_Click"/>
             <Button Name="DeletePointButton"        Content="Usuń punkt"            Click="DeletePoint_Click"/>
             <Button Name="InitializeLearningButton" Content="Inicjalizuj neuron"    Click="InitializeLearning_Click"/>
-            <Button Name="StepLearningButton"       Content="Krok uczenia"          Click="StepLearning_Click"/>
-            <Button Name="EpochLearningButton"      Content="Epoka uczenia"         Click="EpochLearning_Click"/>
-            <Button Name="AutoLearningButton"       Content="Uczenie automatyczne"  Click="AutoLearning_Click"/>
-            <Button Name="SettingsButton"           Content="Ustawienia"            Click="Settings_Click"/>
+            <Button Name="StepLearningButton"       Content="Krok uczenia"          Click="StepLearning_Click"  IsEnabled="{Binding IsSynchronized, Mode=OneWay}"/>
+            <Button Name="EpochLearningButton"      Content="Epoka uczenia"         Click="EpochLearning_Click" IsEnabled="{Binding IsSynchronized, Mode=OneWay}"/>
+            <Button Name="AutoLearningButton"       Content="Uczenie automatyczne"  Click="AutoLearning_Click"  IsEnabled="{Binding IsSynchronized, Mode=OneWay}"/>
         </StackPanel>
         <StackPanel Orientation="Vertical" Width="200" Grid.Row="1" Grid.Column="0">
             <Label  Name="LearningCompletedLabel"   Content="Uczenie zakończone!"   Background="GreenYellow" Visibility="Hidden"/>
