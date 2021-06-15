@@ -168,16 +168,39 @@ namespace SINeuronWPFApp.Views
             dialog.DefaultExt = "json";
             dialog.Filter = fileDialogFilterJson;
             if (dialog.ShowDialog() == true)
-                vm.OpenAppState(dialog.FileName);
+                vm.OpenAppStateJson(dialog.FileName);
         }
 
         private void SaveAppState_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new SaveFileDialog();
-            dialog.DefaultExt = "json";
-            dialog.Filter = fileDialogFilterJson;
+            dialog.DefaultExt = "arff";
+            dialog.Filter = fileDialogFilterArff;
             if (dialog.ShowDialog() == true)
-                vm.SaveAppState(dialog.FileName);
+                vm.SaveAppStateWeka(dialog.FileName);
         }
+        
+
+
+        //==============
+        //JSON
+
+        //private void OpenAppState_Click(object sender, RoutedEventArgs e)
+        //{
+        //    var dialog = new OpenFileDialog();
+        //    dialog.DefaultExt = "json";
+        //    dialog.Filter = fileDialogFilterJson;
+        //    if (dialog.ShowDialog() == true)
+        //        vm.OpenAppStateJson(dialog.FileName);
+        //}
+
+        //private void SaveAppState_Click(object sender, RoutedEventArgs e)
+        //{
+        //    var dialog = new SaveFileDialog();
+        //    dialog.DefaultExt = "json";
+        //    dialog.Filter = fileDialogFilterJson;
+        //    if (dialog.ShowDialog() == true)
+        //        vm.SaveAppStateJson(dialog.FileName);
+        //}
     }
 }

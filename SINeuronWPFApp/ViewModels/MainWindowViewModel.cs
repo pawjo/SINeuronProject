@@ -2,6 +2,7 @@
 using LiveCharts;
 using LiveCharts.Wpf;
 using SINeuronLibrary;
+using SINeuronWPFApp.Data;
 using SINeuronWPFApp.Models;
 using SINeuronWPFApp.Views;
 using System;
@@ -69,6 +70,11 @@ namespace SINeuronWPFApp.ViewModels
             }
         }
 
+        public bool IsPerceptron
+        {
+            get => true;
+        }
+
         public bool IsSynchronized
         {
             get => isSynchronized;
@@ -132,7 +138,7 @@ namespace SINeuronWPFApp.ViewModels
         public INeuron Neuron { get; set; }
 
         public SeriesCollection SeriesCollection { get; set; }
-        
+
         public Canvas SpaceCanvas { get; set; }
 
         public List<ValuePoint> TrainingSet { get; set; }
@@ -155,47 +161,24 @@ namespace SINeuronWPFApp.ViewModels
 
             try
             {
-                using (var reader = new ArffReader(path))
-                {
-                    var header = reader.ReadHeader();
-                    object[] instance;
-                    while ((instance = reader.ReadInstance()) != null)
-                    {
-                        createPoint(new ValuePoint
-                        {
-                            X = (double)instance[0],
-                            Y = (double)instance[1],
-                            Value = ((int)instance[2] == 1) ? 1 : -1
-                        });
-                    }
-                    ;
-                }
+                var reader = new WekaReader();
+                reader.OpenSet(path, TrainingSet);
             }
             catch (Exception exc)
             {
                 new Notification(exc.Message).ShowDialog();
             }
+            SynchronizeFromTrainingSet();
         }
-        
+
         public void SaveSet(string path)
         {
             Synchronize();
 
             try
             {
-                using( var writer = new ArffWriter(path))
-                {
-                    writer.WriteRelationName("Point");
-                    writer.WriteAttribute(new ArffAttribute("x", ArffAttributeType.Numeric));
-                    writer.WriteAttribute(new ArffAttribute("y", ArffAttributeType.Numeric));
-                    writer.WriteAttribute(new ArffAttribute("value", ArffAttributeType.Nominal("-1","1")));
-
-                    foreach (var item in TrainingSet)
-                    {
-                        int val = (item.Value == 1) ? 1 : 0;
-                        writer.WriteInstance(new object[] { item.X, item.Y, val });
-                    }
-                }
+                var writer = new WekaWriter();
+                writer.SaveSet(path, TrainingSet);
             }
             catch (Exception exc)
             {
@@ -203,7 +186,120 @@ namespace SINeuronWPFApp.ViewModels
             }
         }
 
-        public void OpenAppState(string path)
+        public void OpenAppStateWeka(string path)
+        {
+            try
+            {
+                var reader = new WekaReader();
+                reader.OpenSet(path, TrainingSet);
+            }
+            catch (Exception exc)
+            {
+                new Notification(exc.Message).ShowDialog();
+            }
+        }
+
+        public void SaveAppStateWeka(string path)
+        {
+            Synchronize();
+
+            try
+            {
+                var writer = new WekaWriter();
+                writer.SaveAppState(path, Neuron);
+            }
+            catch (Exception exc)
+            {
+                new Notification(exc.Message).ShowDialog();
+            }
+        }
+
+        //public void SaveSet(string path)
+        //{
+        //    Synchronize();
+
+        //    try
+        //    {
+        //        using( var writer = new ArffWriter(path))
+        //        {
+        //            writer.WriteRelationName("Point");
+        //            writer.WriteAttribute(new ArffAttribute(nameof(ValuePoint.X), ArffAttributeType.Numeric));
+        //            writer.WriteAttribute(new ArffAttribute(nameof(ValuePoint.Y), ArffAttributeType.Numeric));
+        //            writer.WriteAttribute(new ArffAttribute(nameof(ValuePoint.Value), ArffAttributeType.Nominal("-1","1")));
+
+        //            foreach (var item in TrainingSet)
+        //            {
+        //                int val = (item.Value == 1) ? 1 : 0;
+        //                writer.WriteInstance(new object[] { item.X, item.Y, val });
+        //            }
+        //        }
+        //    }
+        //    catch (Exception exc)
+        //    {
+        //        new Notification(exc.Message).ShowDialog();
+        //    }
+        //}
+
+        //public void SaveAppStateWeka(string path)
+        //{
+        //    Synchronize();
+
+        //    string trainingSetPath = path.Insert(
+        //        path.IndexOf(".arff", path.Length - 5), "_TrainingSet");
+        //    ;
+        //    try
+        //    {
+        //        using (var writer = new ArffWriter(path))
+        //        {
+        //            writer.WriteRelationName(IsPerceptron ? "Perceptron" : "Adaline");
+        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.CompletedLearning), boolArffAttribute()));
+        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.CurrentError), ArffAttributeType.Numeric));
+        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.EpochSize), ArffAttributeType.Numeric));
+        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.EpochIterator), ArffAttributeType.Numeric));
+        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.ErrorLog), ArffAttributeType.String));
+        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.ErrorTolerance), ArffAttributeType.Numeric));
+        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.IterationCount), ArffAttributeType.Numeric));
+        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.IterationMax), ArffAttributeType.Numeric));
+        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.IterationWarning), ArffAttributeType.Numeric));
+        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.LearningRate), ArffAttributeType.Numeric));
+        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.StopConditionErrorTolerance), boolArffAttribute()));
+        //            writer.WriteAttribute(new ArffAttribute("TrainingSetPath", ArffAttributeType.String));
+        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.Weights), ArffAttributeType.String));
+
+        //            string errorLogString = "[";
+        //            foreach (var item in Neuron.ErrorLog)
+        //            {
+
+        //            }
+
+        //            writer.WriteInstance(new object[]
+        //            {
+        //                Neuron.CompletedLearning ? 1 : 0,
+        //                Neuron.CurrentError,
+        //                (double)Neuron.EpochSize,
+        //                (double)Neuron.EpochIterator,
+        //                Neuron.ErrorLog.ToString(),
+        //                Neuron.ErrorTolerance,
+        //                (double)Neuron.IterationCount,
+        //                (double)Neuron.IterationMax,
+        //                (double)Neuron.IterationWarning,
+        //                Neuron.LearningRate,
+        //                Neuron.StopConditionErrorTolerance ? 1 : 0,
+        //                trainingSetPath,
+        //                Neuron.Weights.ToString()
+        //            });
+        //        }
+        //    }
+        //    catch (Exception exc)
+        //    {
+        //        new Notification(exc.Message).ShowDialog();
+        //    }
+
+        //    SaveSet(trainingSetPath);
+        //}
+        //private ArffAttributeType boolArffAttribute() => ArffAttributeType.Nominal("0", "1");
+
+        public void OpenAppStateJson(string path)
         {
             string json = File.ReadAllText(path);
             Neuron = JsonSerializer.Deserialize<Perceptron>(json);
@@ -215,7 +311,7 @@ namespace SINeuronWPFApp.ViewModels
             }
         }
 
-        public void SaveAppState(string path)
+        public void SaveAppStateJson(string path)
         {
             string json = JsonSerializer.Serialize(Neuron);
             File.WriteAllText(path, json);
@@ -338,7 +434,7 @@ namespace SINeuronWPFApp.ViewModels
         //==================================================
 
 
-        
+
 
         public void AddPoint()
         {
@@ -473,6 +569,17 @@ namespace SINeuronWPFApp.ViewModels
             }
         }
 
+        public void SynchronizeFromTrainingSet()
+        {
+            if (!IsSynchronized)
+            {
+                foreach (var item in TrainingSet)
+                    UIPoints.Add(createUIPoint(item));
+                IsSynchronized = true;
+            }
+        }
+
+
 
         //=================================================
         //Przeciąganie elementow
@@ -530,7 +637,7 @@ namespace SINeuronWPFApp.ViewModels
             }
         }
         //=================================================
-        
+
 
         private void clearPoints()
         {
