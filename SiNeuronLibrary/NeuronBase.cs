@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SINeuronLibrary
 {
@@ -30,9 +31,24 @@ namespace SINeuronLibrary
 
         public double[] Weights { get; set; }
 
-        public abstract void AutoLearning();
-        
-        public abstract int CalculateOutput(double x1, double x2);
+        public NeuronBase()
+        {
+            Weights = new double[3] { 0, 0, 0 };
+        }
+
+        // Uczenie w zaleznosci od wybory uzytkownika,
+        // trwa do momentu osiagniecia okreslonego bledu
+        // lub do momentu przekroczenia maksymalnej liczby iteracji.
+        // w pierwszym przypadku, w razie przekroczenia liczby
+        // bezpieczenstwa iteracji, zostaje wyrzucony
+        // wyjatek, dotyczacy zbyt dlugiego uczenia.
+        public void AutoLearning()
+        {
+            while (!CompletedLearning)
+            {
+                EpochLearning();
+            }
+        }
 
         public bool CheckStopCondition()
         {
@@ -42,11 +58,31 @@ namespace SINeuronLibrary
                 return IterationCount == IterationMax;
         }
 
-        public abstract void EpochLearning();
+        public void EpochLearning()
+        {
+            if (CompletedLearning)
+                return;
 
+            while (EpochIterator < EpochSize)
+            {
+                StepLearning();
+            }
+            FinalizeEpoch();
+        }
+
+        // Konczy uczenie epoki, jezeli warunek zatrzymania jest spełniony,
+        // ustawia koniec uczenia.
         public abstract void FinalizeEpoch();
 
-        public abstract void Initialize(List<ValuePoint> trainingSet);
+        public virtual void Initialize(List<ValuePoint> trainingSet)
+        {
+            Reset();
+            EpochSize = trainingSet.Count;
+            TrainingSet = trainingSet;
+            var random = new Random();
+            for (int i = 0; i < Weights.Length; i++)
+                Weights[i] = random.Next(-300, 300) + random.NextDouble();
+        }
 
         public void Reset()
         {
@@ -66,6 +102,46 @@ namespace SINeuronLibrary
                 Weights[i] = 0;
         }
 
+        // Wykonuje jeden krok uczenia dla jednego obiektu.
         public abstract void StepLearning();
+
+
+        protected int calculateOutput(double inputSum)
+        {
+            return inputSum > 0 ? 1 : -1;
+        }
+
+        protected ValuePoint stepLearningBase()
+        {
+            if (CompletedLearning)
+                throw new Exception("Zakończono uczenie.");
+
+            // Jeżeli warunkiem zatrzymania jest dopuszczalny blad,
+            // sprawdzane jest czy liczba iteracji nie przekracza progu bezpieczenstwa,
+            // przy ktorym uczenienie jest wstrzymywane i pokazywane jest powiadomienie.
+            if (StopConditionErrorTolerance
+                && IterationCount == IterationWarning)
+                throw new Exception($"Przekroczono próg bezpieczeństwa" +
+                    $" {IterationWarning} iteracji.");
+
+            if (!StopConditionErrorTolerance
+                && IterationCount == IterationMax)
+                throw new Exception($"Przekroczono określony próg" +
+                    $" {IterationMax} iteracji.");
+
+            if (TrainingSet == null)
+                throw new NullReferenceException("Zbior testowy jest nullem.");
+
+            if (EpochIterator == EpochSize)
+                FinalizeEpoch();
+
+            IterationCount++;
+            return TrainingSet[EpochIterator++];
+        }
+
+        protected double inputSum(ValuePoint point)
+        {
+            return Weights[0] + Weights[1] * point.X + Weights[2] * point.Y;
+        }
     }
 }

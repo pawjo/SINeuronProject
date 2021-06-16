@@ -4,30 +4,89 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SINeuronWPFApp.Views"
+        xmlns:vr="clr-namespace:SINeuronWPFApp.ValidationRules"
         mc:Ignorable="d"
-        Title="Ustawienia" Height="250" Width="400">
+        Title="Ustawienia" Height="300" Width="400">
     <Grid>
         <StackPanel Orientation="Vertical">
         <Label Content="Ustawienia" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"/>
             <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
                 <Label Content="Warunek zakończenia uczenia:" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                <RadioButton Content="Osiagnięcie maksymalnego dopuszczalnego błędu." Name="RB_errorTolerance" IsChecked="{Binding StopConditionErrorTolerance, Mode=OneWay}" Checked="RB_errorTolerance_Checked" VerticalAlignment="Center"/>
-                <RadioButton Content="Przekorczenie dopuszczalnej liczby iteracji." Name="RB_maxIteration" IsChecked="{Binding StopConditionMaxIteration, Mode=OneWay}" Checked="RB_maxIteration_Checked" VerticalAlignment="Center"/>
+                <RadioButton Content="Osiagnięcie maksymalnego dopuszczalnego błędu." Name="RB_errorTolerance" IsChecked="{Binding StopConditionErrorTolerance, Mode=TwoWay}" VerticalAlignment="Center"/>
+                <RadioButton Content="Przekorczenie dopuszczalnej liczby iteracji." Name="RB_maxIteration" IsChecked="{Binding StopConditionMaxIteration, Mode=TwoWay}" VerticalAlignment="Center"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Label Content="Maksymalny dopuszczalny błąd:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                <TextBox Name="ErrortoleranceTextbox" Text="{Binding ErrorTolerance}" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Width="120" IsEnabled="{Binding StopConditionErrorTolerance, Mode=OneWay}"/>
+                <TextBox Name="ErrortoleranceTextbox" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Width="120" IsEnabled="{Binding StopConditionErrorTolerance, Mode=OneWay}">
+                    <TextBox.Text>
+                    <Binding Path="ErrorTolerance" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <vr:NonNegativeDoubleValidationRule/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                    </TextBox.Text>
+                </TextBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Label Content="Próg ostrzerzenia o liczbie iteracji:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                <TextBox Name="IterationWarningTextbox" Text="{Binding IterationWarning}" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Width="120" IsEnabled="{Binding StopConditionErrorTolerance, Mode=OneWay}"/>
+                <TextBox Name="IterationWarningTextbox" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Width="120" IsEnabled="{Binding StopConditionErrorTolerance, Mode=OneWay}">
+                    <TextBox.Text>
+                        <Binding Path="IterationWarning" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <vr:IntValidationRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Label Content="Maksymalna liczba iteracji:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                <TextBox Name="IterationMaxTextbox" Text="{Binding IterationMax}" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Width="120" IsEnabled="{Binding StopConditionMaxIteration, Mode=OneWay}"/>
+                <TextBox Name="IterationMaxTextbox" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Width="120" IsEnabled="{Binding StopConditionMaxIteration, Mode=OneWay}">
+                    <TextBox.Text>
+                        <Binding Path="IterationMax" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <vr:IntValidationRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                <Label Content="Rodzaj neuronu:" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <RadioButton Content="Perceptron"   Name="RB_perceptron" IsChecked="{Binding IsPerceptron, Mode=TwoWay}"    VerticalAlignment="Center"/>
+                <RadioButton Content="Adaline"      Name="RB_adaline"    IsChecked="{Binding IsAdaline, Mode=TwoWay}"       VerticalAlignment="Center"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Name="SubmitButton" Content="Zatwierdź" Click="SubmitButton_Click"/>
+                <Label Content="Współczynnik uczenia (0,1):" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <TextBox Name="LearningRateTextbox" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Width="120" IsEnabled="{Binding IsAdaline, Mode=OneWay}">
+                    <TextBox.Text>
+                        <Binding Path="LearningRate" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <vr:LearningRateValidationRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Name="SubmitButton" Content="Zatwierdź" Click="SubmitButton_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="IsEnabled" Value="False"/>
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Path=(Validation.HasError),ElementName=ErrortoleranceTextbox}" Value="False"/>
+                                        <Condition Binding="{Binding Path=(Validation.HasError),ElementName=IterationWarningTextbox}" Value="False"/>
+                                        <Condition Binding="{Binding Path=(Validation.HasError),ElementName=IterationMaxTextbox}" Value="False"/>
+                                        <Condition Binding="{Binding Path=(Validation.HasError),ElementName=LearningRateTextbox}" Value="False"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="IsEnabled" Value="True"/>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
                 <Button Name="CancelButton" Content="Anuluj" Click="CancelButton_Click"/>
             </StackPanel>
         </StackPanel>

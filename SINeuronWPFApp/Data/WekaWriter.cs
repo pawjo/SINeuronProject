@@ -32,12 +32,13 @@ namespace SINeuronWPFApp.Data
         {
             if (neuron == null)
                 return;
+            string trainingSetFileName = Path.GetFileNameWithoutExtension(path);
+            trainingSetFileName += "_TrainingSet.arff";
+            string trainingSetPath = Path.Combine(Path.GetDirectoryName(path), trainingSetFileName);
 
-            string trainingSetPath = Path.GetFileNameWithoutExtension(path);
-            trainingSetPath += "_TrainingSet.arff";
 
             var perceptron = neuron as Perceptron;
-            string relationName = perceptron != null ? "Perceptron" : "Adaline";
+            string relationName = (perceptron != null) ? "Perceptron" : "Adaline";
             using (var writer = new ArffWriter(path))
             {
                 writer.WriteRelationName(relationName);
@@ -56,7 +57,7 @@ namespace SINeuronWPFApp.Data
                 writer.WriteAttribute(new ArffAttribute(nameof(NeuronBase.Weights), ArffAttributeType.String));
 
                 double currentError = neuron.CurrentError;
-                if (neuron.EpochIterator == 0)
+                if (neuron.ErrorLog != null && neuron.ErrorLog.Count > 0 && neuron.EpochIterator == 0)
                     currentError = neuron.ErrorLog[neuron.ErrorLog.Count - 1];
 
                 writer.WriteInstance(new object[]
@@ -72,7 +73,7 @@ namespace SINeuronWPFApp.Data
                         (double)neuron.IterationWarning,
                         neuron.LearningRate,
                         neuron.StopConditionErrorTolerance ? 1 : 0,
-                        trainingSetPath,
+                        trainingSetFileName,
                         weightsToString(neuron.Weights)
                 });
             }

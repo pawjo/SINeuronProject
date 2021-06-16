@@ -32,10 +32,12 @@ namespace SINeuronWPFApp.Data
             using (var reader = new ArffReader(path))
             {
                 var header = reader.ReadHeader();
-                if (header.RelationName != "Perceptron")
+                if (header.RelationName == "Perceptron")
+                    neuron = new Perceptron();
+                else if (header.RelationName == "Adaline")
+                    neuron = new Adaline();
+                else
                     throw new FileFormatException();
-                
-                neuron = new Perceptron();
 
                 object[] instance;
                 instance = reader.ReadInstance();

@@ -1,4 +1,6 @@
 ﻿using SINeuronWPFApp.ViewModels;
+using System.Globalization;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 
@@ -11,6 +13,8 @@ namespace SINeuronWPFApp.Views
     {
         public SettingsWindow(SettingsViewModel _vm)
         {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
             DataContext = vm = _vm;
             InitializeComponent();
         }
@@ -42,14 +46,9 @@ namespace SINeuronWPFApp.Views
             }
         }
 
-        private void RB_errorTolerance_Checked(object sender, RoutedEventArgs e)
+        private void LearningRateTextbox_LostFocus(object sender, RoutedEventArgs e)
         {
-            vm.StopConditionErrorTolerance = true;
-        }
 
-        private void RB_maxIteration_Checked(object sender, RoutedEventArgs e)
-        {
-            vm.StopConditionErrorTolerance = false;
         }
     }
 }

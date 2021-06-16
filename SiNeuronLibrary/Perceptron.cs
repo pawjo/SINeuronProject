@@ -5,68 +5,10 @@ namespace SINeuronLibrary
 {
     public class Perceptron : NeuronBase
     {
-        //public bool CompletedLearning { get; set; }
-
-        //public double CurrentError { get; set; }
-
-        //public int EpochSize { get; set; }
-        
-        //public int EpochIterator { get; set; }
-
-        //public List<double> ErrorLog { get; set; }
-
-        //public double ErrorTolerance { get; set; }
-        
-        //public int IterationCount { get; set; }
-
-        //public int IterationMax { get; set; }
-
-        //public int IterationWarning { get; set; }
-
-        //public double LearningRate { get; set; }
-
-        //public bool StopConditionErrorTolerance { get; set; }
-
-        //public List<ValuePoint> TrainingSet { get; set; }
-
-        //public double[] Weights { get; set; }
-
-        // Uczenie w zaleznosci od wybory uzytkownika,
-        // trwa do momentu osiagniecia okreslonego bledu
-        // lub do momentu przekroczenia maksymalnej liczby iteracji.
-        // w pierwszym przypadku, w razie przekroczenia liczby
-        // bezpieczenstwa iteracji, zostaje wyrzucony
-        // wyjatek, dotyczacy zbyt dlugiego uczenia.
-        public override void AutoLearning()
+        public Perceptron() : base()
         {
-            while(!CompletedLearning)
-            {
-                EpochLearning();
-            }
         }
 
-        public override int CalculateOutput(double x1, double x2)
-        {
-            double result = Weights[0] + Weights[1] * x1 + Weights[2] * x2;
-            return result > 0 ? 1 : -1;
-        }
-
-        
-
-        public override void EpochLearning()
-        {
-            if (CompletedLearning)
-                return;
-
-            while(EpochIterator < EpochSize)
-            {
-                StepLearning();
-            }
-            FinalizeEpoch();
-        }
-
-        // Konczy uczenie epoki, jezeli warunek zatrzymania jest spełniony,
-        // ustawia koniec uczenia.
         public override void FinalizeEpoch()
         {
             EpochIterator = 0;
@@ -77,54 +19,21 @@ namespace SINeuronLibrary
             CurrentError = 0;
         }
 
-        public override void Initialize(List<ValuePoint> trainingSet)
-        {
-            Reset();
-            EpochSize = trainingSet.Count;
-            TrainingSet = trainingSet;
-            var random = new Random();
-            for (int i = 0; i < Weights.Length; i++)
-                Weights[i] = random.Next(-300, 300) + random.NextDouble();
-        }
-
-        // Wykonuje jeden krok uczenia dla jednego obiektu.
         public override void StepLearning()
         {
-            if (CompletedLearning)
-                return;
+            var point = stepLearningBase();
 
-            // Jeżeli warunkiem zatrzymania jest dopuszczalny blad,
-            // sprawdzane jest czy liczba iteracji nie przekracza progu bezpieczenstwa,
-            // przy ktorym uczenienie jest wstrzymywane i pokazywane jest powiadomienie.
-            if (StopConditionErrorTolerance
-                && IterationCount == IterationWarning)
-                throw new Exception($"Przekroczono próg bezpieczeństwa" +
-                    $" {IterationWarning} iteracji.");
-
-            if(!StopConditionErrorTolerance
-                && IterationCount == IterationMax)
-                throw new Exception($"Przekroczono określony próg" +
-                    $" {IterationMax} iteracji.");
-
-            if (TrainingSet == null)
-                throw new NullReferenceException("Zbior testowy jest nullem.");
-
-            if (EpochIterator == EpochSize)
-                FinalizeEpoch();
-            
-            var point = TrainingSet[EpochIterator++];
-
-            int y = CalculateOutput(point.X, point.Y);
+            double sum = inputSum(point);
+            int y = calculateOutput(sum);
 
             if (y != point.Value)
-                ModifyWeights(point);
+                modifyWeights(point);
 
             // Liczenie błędu
             CurrentError += Math.Pow(point.Value - y, 2);
-            IterationCount++;
         }
 
-        private void ModifyWeights(ValuePoint point)
+        private void modifyWeights(ValuePoint point)
         {
             Weights[0] = Weights[0] + point.Value;
             Weights[1] = Weights[1] + point.X * point.Value;

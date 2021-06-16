@@ -7,7 +7,7 @@
         xmlns:cfg="clr-namespace:SINeuronWPFApp"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
-        Title="Neuron" Width="1000" Height="500">
+        Title="Neuron" Width="1000" Height="520">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
@@ -56,8 +56,8 @@
             <Button Name="AutoLearningButton"       Content="Uczenie automatyczne"  Click="AutoLearning_Click"  IsEnabled="{Binding NeuronButtonsEnabled, Mode=OneWay}"/>
         </StackPanel>
         <StackPanel Orientation="Vertical" Width="200" Grid.Row="1" Grid.Column="0">
-            <Label  Name="LearningCompletedLabel"       Content="Uczenie zakończone!"               Background="GreenYellow" Visibility="{Binding VisibilityCompletedLearningMessage}"/>
-            <Label  Name="LearningCompletedTextLabel"   Content="{Binding CompletedLearningText}"   Background="GreenYellow" Visibility="{Binding VisibilityCompletedLearningMessage}"/>
+            <Label      Name="LearningCompletedLabel"       Content="Uczenie zakończone!"           Background="GreenYellow" Visibility="{Binding VisibilityCompletedLearningMessage}"/>
+            <TextBlock  Name="LearningCompletedTextLabel"   Text="{Binding CompletedLearningText}"  Background="GreenYellow" Visibility="{Binding VisibilityCompletedLearningMessage}" TextWrapping="Wrap" Padding="5"/>
             <Grid ShowGridLines="True">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="60"/>
@@ -78,7 +78,7 @@
                 <Label Name="w2ValueLabel"          Grid.Column="1" Grid.Row="2" Content="{Binding Weight2, Mode=OneWay}"/>
                 <Label Name="IterationLabel"        Grid.Column="0" Grid.Row="3" Content="Iteracja"/>
                 <Label Name="IterationValueLabel"   Grid.Column="1" Grid.Row="3" Content="{Binding Iteration, Mode=OneWay}"/>
-                <Label Name="ErrorLabel"            Grid.Column="0" Grid.Row="4" Content="Aktualny błąd"/>
+                <TextBlock Name="ErrorLabel"        Grid.Column="0" Grid.Row="4" Text="Aktualny błąd" TextWrapping="Wrap" Padding="5"/>
                 <Label Name="ErrorValueLabel"       Grid.Column="1" Grid.Row="4" Content="{Binding Error, Mode=OneWay}"/>
             </Grid>
 

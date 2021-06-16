@@ -10,7 +10,9 @@ namespace SINeuronWPFApp
 
         public static Brush PointBorderBrush = Brushes.Black;
 
-        public static Brush PointBackgroundBrush = Brushes.Gray;
+        public static Brush Point1BackgroundBrush = Brushes.LightBlue;
+        
+        public static Brush PointMinus1BackgroundBrush = Brushes.LightSalmon;
 
         public static Brush ActivePointBorderBrush = Brushes.DarkGray;
 

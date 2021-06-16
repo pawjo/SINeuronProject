@@ -31,11 +31,25 @@ namespace SINeuronWPFApp.ViewModels
         public bool IsValue1
         {
             get => Point.Value == 1;
+            set
+            {
+                if (value)
+                    Point.Value = 1;
+                onPropertyChanged(nameof(IsValue1));
+                onPropertyChanged(nameof(IsValueMinus1));
+            }
         }
 
         public bool IsValueMinus1
         {
             get => Point.Value == -1;
+            set
+            {
+                if (value)
+                    Point.Value = -1;
+                onPropertyChanged(nameof(IsValue1));
+                onPropertyChanged(nameof(IsValueMinus1));
+            }
         }
     }
 }

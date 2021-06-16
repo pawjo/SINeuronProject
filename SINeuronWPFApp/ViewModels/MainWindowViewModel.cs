@@ -13,6 +13,7 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace SINeuronWPFApp.ViewModels
@@ -218,92 +219,6 @@ namespace SINeuronWPFApp.ViewModels
                 new Notification(exc.Message).ShowDialog();
             }
         }
-
-        //public void SaveSet(string path)
-        //{
-        //    Synchronize();
-
-        //    try
-        //    {
-        //        using( var writer = new ArffWriter(path))
-        //        {
-        //            writer.WriteRelationName("Point");
-        //            writer.WriteAttribute(new ArffAttribute(nameof(ValuePoint.X), ArffAttributeType.Numeric));
-        //            writer.WriteAttribute(new ArffAttribute(nameof(ValuePoint.Y), ArffAttributeType.Numeric));
-        //            writer.WriteAttribute(new ArffAttribute(nameof(ValuePoint.Value), ArffAttributeType.Nominal("-1","1")));
-
-        //            foreach (var item in TrainingSet)
-        //            {
-        //                int val = (item.Value == 1) ? 1 : 0;
-        //                writer.WriteInstance(new object[] { item.X, item.Y, val });
-        //            }
-        //        }
-        //    }
-        //    catch (Exception exc)
-        //    {
-        //        new Notification(exc.Message).ShowDialog();
-        //    }
-        //}
-
-        //public void SaveAppStateWeka(string path)
-        //{
-        //    Synchronize();
-
-        //    string trainingSetPath = path.Insert(
-        //        path.IndexOf(".arff", path.Length - 5), "_TrainingSet");
-        //    ;
-        //    try
-        //    {
-        //        using (var writer = new ArffWriter(path))
-        //        {
-        //            writer.WriteRelationName(IsPerceptron ? "Perceptron" : "Adaline");
-        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.CompletedLearning), boolArffAttribute()));
-        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.CurrentError), ArffAttributeType.Numeric));
-        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.EpochSize), ArffAttributeType.Numeric));
-        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.EpochIterator), ArffAttributeType.Numeric));
-        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.ErrorLog), ArffAttributeType.String));
-        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.ErrorTolerance), ArffAttributeType.Numeric));
-        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.IterationCount), ArffAttributeType.Numeric));
-        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.IterationMax), ArffAttributeType.Numeric));
-        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.IterationWarning), ArffAttributeType.Numeric));
-        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.LearningRate), ArffAttributeType.Numeric));
-        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.StopConditionErrorTolerance), boolArffAttribute()));
-        //            writer.WriteAttribute(new ArffAttribute("TrainingSetPath", ArffAttributeType.String));
-        //            writer.WriteAttribute(new ArffAttribute(nameof(INeuron.Weights), ArffAttributeType.String));
-
-        //            string errorLogString = "[";
-        //            foreach (var item in Neuron.ErrorLog)
-        //            {
-
-        //            }
-
-        //            writer.WriteInstance(new object[]
-        //            {
-        //                Neuron.CompletedLearning ? 1 : 0,
-        //                Neuron.CurrentError,
-        //                (double)Neuron.EpochSize,
-        //                (double)Neuron.EpochIterator,
-        //                Neuron.ErrorLog.ToString(),
-        //                Neuron.ErrorTolerance,
-        //                (double)Neuron.IterationCount,
-        //                (double)Neuron.IterationMax,
-        //                (double)Neuron.IterationWarning,
-        //                Neuron.LearningRate,
-        //                Neuron.StopConditionErrorTolerance ? 1 : 0,
-        //                trainingSetPath,
-        //                Neuron.Weights.ToString()
-        //            });
-        //        }
-        //    }
-        //    catch (Exception exc)
-        //    {
-        //        new Notification(exc.Message).ShowDialog();
-        //    }
-
-        //    SaveSet(trainingSetPath);
-        //}
-        //private ArffAttributeType boolArffAttribute() => ArffAttributeType.Nominal("0", "1");
-
         public void OpenAppStateJson(string path)
         {
             string json = File.ReadAllText(path);
@@ -488,6 +403,7 @@ namespace SINeuronWPFApp.ViewModels
                     setBorderCanvasPosition(border, point.X, point.Y);
                 if (oldPoint.Value != point.Value)
                 {
+                    border.Background = getUIPointBackground(point.Value);
                     var textBlock = border.Child as TextBlock;
                     if (textBlock != null)
                         textBlock.Text = point.Value.ToString();
@@ -544,8 +460,10 @@ namespace SINeuronWPFApp.ViewModels
             var settingsVm = new SettingsViewModel
             {
                 ErrorTolerance = Neuron.ErrorTolerance,
+                IsPerceptron = (Neuron as Perceptron) != null,
                 IterationMax = Neuron.IterationMax,
                 IterationWarning = Neuron.IterationWarning,
+                LearningRate = Neuron.LearningRate,
                 StopConditionErrorTolerance = Neuron.StopConditionErrorTolerance
             };
 
@@ -553,11 +471,19 @@ namespace SINeuronWPFApp.ViewModels
             settingsWindow.ShowDialog();
             if (settingsVm.ChangesSubmitted)
             {
+                if (settingsVm.IsPerceptron && Neuron as Perceptron == null)
+                    Neuron = new Perceptron();
+                else if (settingsVm.IsAdaline && Neuron as Adaline == null)
+                    Neuron = new Adaline();
+
                 Neuron.ErrorTolerance = settingsVm.ErrorTolerance;
                 Neuron.IterationMax = settingsVm.IterationMax;
                 Neuron.IterationWarning = settingsVm.IterationWarning;
+                Neuron.LearningRate = settingsVm.LearningRate;
                 Neuron.StopConditionErrorTolerance = settingsVm.StopConditionErrorTolerance;
                 Reset();
+                CompletedLearningPropertyChanged();
+                IterationPropertyChanged();
             }
         }
 
@@ -596,8 +522,9 @@ namespace SINeuronWPFApp.ViewModels
             if (ActiveBorder != null)
                 deactivateBorder();
             ActiveBorder = border;
-            border.BorderBrush = Configuration.ActivePointBorderBrush;
-            border.Background = Configuration.ActivePointBackgroundBrush;
+            activeBorderPreviousBackground = ActiveBorder.Background;
+            ActiveBorder.BorderBrush = Configuration.ActivePointBorderBrush;
+            ActiveBorder.Background = Configuration.ActivePointBackgroundBrush;
         }
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -643,6 +570,7 @@ namespace SINeuronWPFApp.ViewModels
         }
         //=================================================
 
+        private Brush activeBorderPreviousBackground;
 
         private void clearPoints()
         {
@@ -678,7 +606,7 @@ namespace SINeuronWPFApp.ViewModels
             border.Width = Configuration.PointSize;
             border.Height = Configuration.PointSize;
             border.BorderBrush = Configuration.PointBorderBrush;
-            border.Background = Configuration.PointBackgroundBrush;
+            border.Background = getUIPointBackground(point.Value);
             border.BorderThickness = new Thickness(1);
             border.CornerRadius = new CornerRadius(60);
             border.MouseLeftButtonDown += new MouseButtonEventHandler(Border_MouseLeftButtonDown);
@@ -697,6 +625,8 @@ namespace SINeuronWPFApp.ViewModels
                 TextBlock = textBlock
             };
         }
+
+        
 
         private ValuePoint createValuePoint(Border border)
         {
@@ -720,9 +650,17 @@ namespace SINeuronWPFApp.ViewModels
             if (ActiveBorder != null)
             {
                 ActiveBorder.BorderBrush = Configuration.PointBorderBrush;
-                ActiveBorder.Background = Configuration.PointBackgroundBrush;
+                ActiveBorder.Background = activeBorderPreviousBackground;
                 ActiveBorder = null;
             }
+        }
+
+        private Brush getUIPointBackground(int val)
+        {
+            if (val == 1)
+                return Configuration.Point1BackgroundBrush;
+            else
+                return Configuration.PointMinus1BackgroundBrush;
         }
 
         private double getWeight(int i)
