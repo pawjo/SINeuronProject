@@ -2,6 +2,7 @@
 using SINeuronLibrary;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,32 +28,32 @@ namespace SINeuronWPFApp.Data
             }
         }
 
-        public void SaveAppState(string path, INeuron neuron)
+        public void SaveAppState(string path, NeuronBase neuron)
         {
             if (neuron == null)
                 return;
 
-            string trainingSetPath = path.Insert(
-                path.IndexOf(".arff", path.Length - 5), "_TrainingSet");
+            string trainingSetPath = Path.GetFileNameWithoutExtension(path);
+            trainingSetPath += "_TrainingSet.arff";
 
             var perceptron = neuron as Perceptron;
             string relationName = perceptron != null ? "Perceptron" : "Adaline";
             using (var writer = new ArffWriter(path))
             {
                 writer.WriteRelationName(relationName);
-                writer.WriteAttribute(new ArffAttribute(nameof(INeuron.CompletedLearning), boolArffAttribute()));
-                writer.WriteAttribute(new ArffAttribute(nameof(INeuron.CurrentError), ArffAttributeType.Numeric));
-                writer.WriteAttribute(new ArffAttribute(nameof(INeuron.EpochSize), ArffAttributeType.Numeric));
-                writer.WriteAttribute(new ArffAttribute(nameof(INeuron.EpochIterator), ArffAttributeType.Numeric));
-                writer.WriteAttribute(new ArffAttribute(nameof(INeuron.ErrorLog), ArffAttributeType.String));
-                writer.WriteAttribute(new ArffAttribute(nameof(INeuron.ErrorTolerance), ArffAttributeType.Numeric));
-                writer.WriteAttribute(new ArffAttribute(nameof(INeuron.IterationCount), ArffAttributeType.Numeric));
-                writer.WriteAttribute(new ArffAttribute(nameof(INeuron.IterationMax), ArffAttributeType.Numeric));
-                writer.WriteAttribute(new ArffAttribute(nameof(INeuron.IterationWarning), ArffAttributeType.Numeric));
-                writer.WriteAttribute(new ArffAttribute(nameof(INeuron.LearningRate), ArffAttributeType.Numeric));
-                writer.WriteAttribute(new ArffAttribute(nameof(INeuron.StopConditionErrorTolerance), boolArffAttribute()));
-                writer.WriteAttribute(new ArffAttribute("TrainingSetPath", ArffAttributeType.String));
-                writer.WriteAttribute(new ArffAttribute(nameof(INeuron.Weights), ArffAttributeType.String));
+                writer.WriteAttribute(new ArffAttribute(nameof(NeuronBase.CompletedLearning), boolArffAttribute()));
+                writer.WriteAttribute(new ArffAttribute(nameof(NeuronBase.CurrentError), ArffAttributeType.Numeric));
+                writer.WriteAttribute(new ArffAttribute(nameof(NeuronBase.EpochSize), ArffAttributeType.Numeric));
+                writer.WriteAttribute(new ArffAttribute(nameof(NeuronBase.EpochIterator), ArffAttributeType.Numeric));
+                writer.WriteAttribute(new ArffAttribute(nameof(NeuronBase.ErrorLog), ArffAttributeType.String));
+                writer.WriteAttribute(new ArffAttribute(nameof(NeuronBase.ErrorTolerance), ArffAttributeType.Numeric));
+                writer.WriteAttribute(new ArffAttribute(nameof(NeuronBase.IterationCount), ArffAttributeType.Numeric));
+                writer.WriteAttribute(new ArffAttribute(nameof(NeuronBase.IterationMax), ArffAttributeType.Numeric));
+                writer.WriteAttribute(new ArffAttribute(nameof(NeuronBase.IterationWarning), ArffAttributeType.Numeric));
+                writer.WriteAttribute(new ArffAttribute(nameof(NeuronBase.LearningRate), ArffAttributeType.Numeric));
+                writer.WriteAttribute(new ArffAttribute(nameof(NeuronBase.StopConditionErrorTolerance), boolArffAttribute()));
+                writer.WriteAttribute(new ArffAttribute("TrainingSetFileName", ArffAttributeType.String));
+                writer.WriteAttribute(new ArffAttribute(nameof(NeuronBase.Weights), ArffAttributeType.String));
 
                 double currentError = neuron.CurrentError;
                 if (neuron.EpochIterator == 0)

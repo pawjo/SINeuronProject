@@ -135,7 +135,7 @@ namespace SINeuronWPFApp.ViewModels
             }
         }
 
-        public INeuron Neuron { get; set; }
+        public NeuronBase Neuron { get; set; }
 
         public SeriesCollection SeriesCollection { get; set; }
 

@@ -3,33 +3,33 @@ using System.Collections.Generic;
 
 namespace SINeuronLibrary
 {
-    public class Perceptron : INeuron
+    public class Perceptron : NeuronBase
     {
-        public bool CompletedLearning { get; set; }
+        //public bool CompletedLearning { get; set; }
 
-        public double CurrentError { get; set; }
+        //public double CurrentError { get; set; }
 
-        public int EpochSize { get; set; }
+        //public int EpochSize { get; set; }
         
-        public int EpochIterator { get; set; }
+        //public int EpochIterator { get; set; }
 
-        public List<double> ErrorLog { get; set; }
+        //public List<double> ErrorLog { get; set; }
 
-        public double ErrorTolerance { get; set; }
+        //public double ErrorTolerance { get; set; }
         
-        public int IterationCount { get; set; }
+        //public int IterationCount { get; set; }
 
-        public int IterationMax { get; set; }
+        //public int IterationMax { get; set; }
 
-        public int IterationWarning { get; set; }
+        //public int IterationWarning { get; set; }
 
-        public double LearningRate { get; set; }
+        //public double LearningRate { get; set; }
 
-        public bool StopConditionErrorTolerance { get; set; }
+        //public bool StopConditionErrorTolerance { get; set; }
 
-        public List<ValuePoint> TrainingSet { get; set; }
+        //public List<ValuePoint> TrainingSet { get; set; }
 
-        public double[] Weights { get; set; }
+        //public double[] Weights { get; set; }
 
         // Uczenie w zaleznosci od wybory uzytkownika,
         // trwa do momentu osiagniecia okreslonego bledu
@@ -37,7 +37,7 @@ namespace SINeuronLibrary
         // w pierwszym przypadku, w razie przekroczenia liczby
         // bezpieczenstwa iteracji, zostaje wyrzucony
         // wyjatek, dotyczacy zbyt dlugiego uczenia.
-        public void AutoLearning()
+        public override void AutoLearning()
         {
             while(!CompletedLearning)
             {
@@ -45,21 +45,15 @@ namespace SINeuronLibrary
             }
         }
 
-        public int CalculateOutput(double x1, double x2)
+        public override int CalculateOutput(double x1, double x2)
         {
             double result = Weights[0] + Weights[1] * x1 + Weights[2] * x2;
             return result > 0 ? 1 : -1;
         }
 
-        public bool CheckStopCondition()
-        {
-            if (StopConditionErrorTolerance)
-                return CurrentError <= ErrorTolerance;
-            else
-                return IterationCount == IterationMax;
-        }
+        
 
-        public void EpochLearning()
+        public override void EpochLearning()
         {
             if (CompletedLearning)
                 return;
@@ -73,7 +67,7 @@ namespace SINeuronLibrary
 
         // Konczy uczenie epoki, jezeli warunek zatrzymania jest spełniony,
         // ustawia koniec uczenia.
-        public void FinalizeEpoch()
+        public override void FinalizeEpoch()
         {
             EpochIterator = 0;
             CurrentError /= 2;
@@ -83,7 +77,7 @@ namespace SINeuronLibrary
             CurrentError = 0;
         }
 
-        public void Initialize(List<ValuePoint> trainingSet)
+        public override void Initialize(List<ValuePoint> trainingSet)
         {
             Reset();
             EpochSize = trainingSet.Count;
@@ -93,26 +87,8 @@ namespace SINeuronLibrary
                 Weights[i] = random.Next(-300, 300) + random.NextDouble();
         }
 
-        public void Reset()
-        {
-            CompletedLearning = false;
-            CurrentError = 0;
-            EpochIterator = 0;
-            IterationCount = 0;
-            
-            if (ErrorLog == null)
-                ErrorLog = new List<double>();
-            else
-                ErrorLog.Clear();
-            
-            if (Weights == null)
-                Weights = new double[3];
-            for (int i = 0; i < 3; i++)
-                Weights[i] = 0;
-        }
-
         // Wykonuje jeden krok uczenia dla jednego obiektu.
-        public void StepLearning()
+        public override void StepLearning()
         {
             if (CompletedLearning)
                 return;

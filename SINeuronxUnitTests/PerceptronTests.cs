@@ -6,7 +6,7 @@ namespace SINeuronxUnitTests
 {
     public class PerceptronTests
     {
-        public INeuron neuron;
+        public NeuronBase neuron;
 
         [Fact]
         public void NoWeightsModification()

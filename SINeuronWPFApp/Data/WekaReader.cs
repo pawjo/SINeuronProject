@@ -2,6 +2,7 @@
 using SINeuronLibrary;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace SINeuronWPFApp.Data
 {
@@ -25,14 +26,15 @@ namespace SINeuronWPFApp.Data
             }
         }
 
-
-        public INeuron OpenAppState(string path)
+        public NeuronBase OpenAppState(string path)
         {
-            INeuron neuron;
+            NeuronBase neuron;
             using (var reader = new ArffReader(path))
             {
                 var header = reader.ReadHeader();
-                //if (header.RelationName == "Perceptron")
+                if (header.RelationName != "Perceptron")
+                    throw new FileFormatException();
+                
                 neuron = new Perceptron();
 
                 object[] instance;
@@ -49,9 +51,10 @@ namespace SINeuronWPFApp.Data
                 neuron.IterationWarning = (int)((double)instance[8]);
                 neuron.LearningRate = (double)instance[9];
                 neuron.StopConditionErrorTolerance = ((int)instance[10] == 1) ? true : false;
-                string trainingSetPath = (string)instance[11];
+                string trainingSetFileName = (string)instance[11];
                 neuron.Weights = weightsFromString((string)instance[12]);
 
+                string trainingSetPath = Path.Combine(Path.GetDirectoryName(path), trainingSetFileName);
                 neuron.TrainingSet = new List<ValuePoint>();
                 OpenSet(trainingSetPath, neuron.TrainingSet);
             }
