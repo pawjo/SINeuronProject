@@ -165,10 +165,10 @@ namespace SINeuronWPFApp.Views
         private void OpenAppState_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new OpenFileDialog();
-            dialog.DefaultExt = "json";
-            dialog.Filter = fileDialogFilterJson;
+            dialog.DefaultExt = "arff";
+            dialog.Filter = fileDialogFilterArff;
             if (dialog.ShowDialog() == true)
-                vm.OpenAppStateJson(dialog.FileName);
+                vm.OpenAppStateWeka(dialog.FileName);
         }
 
         private void SaveAppState_Click(object sender, RoutedEventArgs e)

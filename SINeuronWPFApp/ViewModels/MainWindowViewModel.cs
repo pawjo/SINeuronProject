@@ -191,7 +191,12 @@ namespace SINeuronWPFApp.ViewModels
             try
             {
                 var reader = new WekaReader();
-                reader.OpenSet(path, TrainingSet);
+                Neuron = reader.OpenAppState(path);
+                TrainingSet = Neuron.TrainingSet;
+                SynchronizeFromTrainingSet();
+                IterationPropertyChanged();
+                CompletedLearningPropertyChanged();
+                CreateChart();
             }
             catch (Exception exc)
             {

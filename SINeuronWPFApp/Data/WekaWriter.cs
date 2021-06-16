@@ -54,10 +54,14 @@ namespace SINeuronWPFApp.Data
                 writer.WriteAttribute(new ArffAttribute("TrainingSetPath", ArffAttributeType.String));
                 writer.WriteAttribute(new ArffAttribute(nameof(INeuron.Weights), ArffAttributeType.String));
 
+                double currentError = neuron.CurrentError;
+                if (neuron.EpochIterator == 0)
+                    currentError = neuron.ErrorLog[neuron.ErrorLog.Count - 1];
+
                 writer.WriteInstance(new object[]
                 {
                         neuron.CompletedLearning ? 1 : 0,
-                        neuron.CurrentError,
+                        currentError,
                         (double)neuron.EpochSize,
                         (double)neuron.EpochIterator,
                         errorLogToString(neuron.ErrorLog),
@@ -82,7 +86,7 @@ namespace SINeuronWPFApp.Data
                 result += errorLog[0];
 
             for (int i = 1; i < errorLog.Count; i++)
-                result += "," + errorLog[i];
+                result += $"{separator}{errorLog[i]}";
 
             result += "]";
             return result;
@@ -91,11 +95,13 @@ namespace SINeuronWPFApp.Data
         private string weightsToString(double[] weights)
         {
             if (weights == null)
-                return "[0, 0, 0]";
+                return $"[0{separator}0{separator}0]";
 
-            return $"[{weights[0]},{weights[1]},{weights[2]}]";
+            return $"[{weights[0]}{separator}{weights[1]}{separator}{weights[2]}]";
         }
 
         private ArffAttributeType boolArffAttribute() => ArffAttributeType.Nominal("0", "1");
+
+        private char separator = ';';
     }
 }
