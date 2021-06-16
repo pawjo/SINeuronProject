@@ -22,7 +22,6 @@ namespace SINeuronWPFApp.Views
             neuronButtons.Add(StepLearningButton);
             neuronButtons.Add(EpochLearningButton);
             neuronButtons.Add(AutoLearningButton);
-            //disableNeuronButtons();
         }
 
 
@@ -39,34 +38,13 @@ namespace SINeuronWPFApp.Views
             if (vm.ActiveBorder != null)
                 vm.DeletePoint(vm.ActiveBorder);
         }
-        private void disableNeuronButtons()
-        {
-            foreach (var item in neuronButtons)
-            {
-                item.IsEnabled = false;
-            }
-        }
-
         private void EditPoint_Click(object sender, RoutedEventArgs e)
         {
             if (vm.ActiveBorder != null)
                 vm.EditPoint(vm.ActiveBorder);
         }
-
-        private void enableNeuronButtons()
-        {
-            foreach (var item in neuronButtons)
-            {
-                item.IsEnabled = true;
-            }
-        }
-
         private void InitializeLearning_Click(object sender, RoutedEventArgs e)
         {
-
-            //LearningCompletedLabel.Visibility = Visibility.Hidden;
-            //if (vm.InitializeNeuron())
-            //    enableNeuronButtons();
             vm.InitializeNeuron();
         }
 
@@ -126,7 +104,6 @@ namespace SINeuronWPFApp.Views
         private void afterLearning()
         {
             if (vm.Neuron.CompletedLearning)
-                //learningcompletedlabel.visibility = visibility.visible;
                 vm.CompletedLearningPropertyChanged();
 
             vm.IterationPropertyChanged();
