@@ -5,6 +5,7 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <PackageIcon>ikona1.png</PackageIcon>
+    <ApplicationIcon>ikona1_E0k_icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SINeuronWPFApp.Views"
         xmlns:vr="clr-namespace:SINeuronWPFApp.ValidationRules"
         mc:Ignorable="d"
-        Title="Ustawienia" Height="300" Width="400">
+        Title="Ustawienia" Height="350" Width="400">
     <Grid>
         <StackPanel Orientation="Vertical">
         <Label Content="Ustawienia" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"/>
