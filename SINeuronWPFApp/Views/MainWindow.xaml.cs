@@ -49,7 +49,14 @@ namespace SINeuronWPFApp.Views
         }
         private void InitializeLearning_Click(object sender, RoutedEventArgs e)
         {
-            vm.InitializeNeuron();
+            try
+            {
+                vm.InitializeNeuron();
+            }
+            catch (Exception exc)
+            {
+                new Notification(exc.Message).ShowDialog();
+            }
         }
 
         private void StepLearning_Click(object sender, RoutedEventArgs e)

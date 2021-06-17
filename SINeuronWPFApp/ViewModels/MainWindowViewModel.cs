@@ -439,10 +439,10 @@ namespace SINeuronWPFApp.ViewModels
 
         public void EpochPropertyChanged() => onPropertyChanged(nameof(EpochNumber));
 
-        public bool InitializeNeuron()
+        public void InitializeNeuron()
         {
             if (UIPoints.Count < 2)
-                return false;
+                throw new Exception("Brak punktów w układzie współrzędnych.");
 
             Synchronize();
 
@@ -450,7 +450,6 @@ namespace SINeuronWPFApp.ViewModels
             CompletedLearningPropertyChanged();
             CreateChart();
             IterationPropertyChanged();
-            return true;
         }
 
         public void Reset()
