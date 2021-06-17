@@ -28,7 +28,7 @@
                 </TextBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Label Content="Próg ostrzerzenia o liczbie iteracji:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <Label Content="Próg ostrzeżenia o liczbie iteracji:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                 <TextBox Name="IterationWarningTextbox" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Width="120" IsEnabled="{Binding StopConditionErrorTolerance, Mode=OneWay}">
                     <TextBox.Text>
                         <Binding Path="IterationWarning" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">

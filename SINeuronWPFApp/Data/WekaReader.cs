@@ -10,9 +10,14 @@ namespace SINeuronWPFApp.Data
     {
         public void OpenSet(string path, List<ValuePoint> trainingSet)
         {
+            if (Path.GetExtension(path) != ".arff")
+                throw new FileFormatException("Nieprawidłowy format danych.");
+
             using (var reader = new ArffReader(path))
             {
                 var header = reader.ReadHeader();
+                if (header.RelationName != "Point")
+                    throw new FileFormatException("Nieprawidłowy format danych.");
                 object[] instance;
                 while ((instance = reader.ReadInstance()) != null)
                 {
@@ -28,6 +33,9 @@ namespace SINeuronWPFApp.Data
 
         public NeuronBase OpenAppState(string path)
         {
+            if (Path.GetExtension(path) != ".arff")
+                throw new FileFormatException("Nieprawidłowy format danych.");
+
             NeuronBase neuron;
             using (var reader = new ArffReader(path))
             {
@@ -37,7 +45,7 @@ namespace SINeuronWPFApp.Data
                 else if (header.RelationName == "Adaline")
                     neuron = new Adaline();
                 else
-                    throw new FileFormatException();
+                    throw new FileFormatException("Nieprawidłowy format danych.");
 
                 object[] instance;
                 instance = reader.ReadInstance();

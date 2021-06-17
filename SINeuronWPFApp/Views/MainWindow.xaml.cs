@@ -37,11 +37,15 @@ namespace SINeuronWPFApp.Views
         {
             if (vm.ActiveBorder != null)
                 vm.DeletePoint(vm.ActiveBorder);
+            else
+                new Notification("Nie wybrano punktu do usunięcia.").ShowDialog();
         }
         private void EditPoint_Click(object sender, RoutedEventArgs e)
         {
             if (vm.ActiveBorder != null)
                 vm.EditPoint(vm.ActiveBorder);
+            else
+                new Notification("Nie wybrano punktu do edycji.").ShowDialog();
         }
         private void InitializeLearning_Click(object sender, RoutedEventArgs e)
         {

@@ -21,7 +21,15 @@ namespace SINeuronLibrary
 
         public int IterationMax { get; set; }
 
-        public int IterationWarning { get; set; }
+        public int IterationWarning
+        {
+            get => iterationWarning; 
+            set
+            {
+                iterationWarning = value;
+                iterationWarningActual = value;
+            }
+        }
 
         public double LearningRate { get; set; }
         
@@ -120,9 +128,12 @@ namespace SINeuronLibrary
             // sprawdzane jest czy liczba iteracji nie przekracza progu bezpieczenstwa,
             // przy ktorym uczenienie jest wstrzymywane i pokazywane jest powiadomienie.
             if (StopConditionErrorTolerance
-                && IterationCount == IterationWarning)
+                && IterationCount == iterationWarningActual)
+            {
+                iterationWarningActual += iterationWarning;
                 throw new Exception($"Przekroczono próg bezpieczeństwa" +
-                    $" {IterationWarning} iteracji.");
+                      $" {IterationWarning} iteracji.");
+            }
 
             if (!StopConditionErrorTolerance
                 && IterationCount == IterationMax)
@@ -143,5 +154,9 @@ namespace SINeuronLibrary
         {
             return Weights[0] + Weights[1] * point.X + Weights[2] * point.Y;
         }
+
+        private int iterationWarning;
+
+        private int iterationWarningActual;
     }
 }

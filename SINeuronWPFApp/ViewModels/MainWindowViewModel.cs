@@ -60,6 +60,17 @@ namespace SINeuronWPFApp.ViewModels
             }
         }
 
+        public int EpochNumber
+        {
+            get
+            {
+                if (Neuron != null && Neuron.ErrorLog != null)
+                    return Neuron.ErrorLog.Count;
+                else 
+                    return 0;
+            }
+        }
+
         public double Error
         {
             get
@@ -128,12 +139,17 @@ namespace SINeuronWPFApp.ViewModels
         {
             get
             {
-                ;
-                if (IsSynchronized && !Neuron.CompletedLearning)
+                if (IsSynchronized && !Neuron.CompletedLearning
+                    && Neuron.TrainingSet != null)
                     return true;
                 else
                     return false;
             }
+        }
+
+        public int PointsNumber
+        {
+            get => UIPoints.Count;
         }
 
         public NeuronBase Neuron { get; set; }
@@ -159,6 +175,7 @@ namespace SINeuronWPFApp.ViewModels
         {
             clearPoints();
             Reset();
+            IsSynchronized = false;
 
             try
             {
@@ -170,6 +187,9 @@ namespace SINeuronWPFApp.ViewModels
                 new Notification(exc.Message).ShowDialog();
             }
             SynchronizeFromTrainingSet();
+            CompletedLearningPropertyChanged();
+            IterationPropertyChanged();
+            onPropertyChanged(nameof(PointsNumber));
         }
 
         public void SaveSet(string path)
@@ -198,6 +218,7 @@ namespace SINeuronWPFApp.ViewModels
                 IterationPropertyChanged();
                 CompletedLearningPropertyChanged();
                 CreateChart();
+                onPropertyChanged(nameof(PointsNumber));
             }
             catch (Exception exc)
             {
@@ -271,6 +292,7 @@ namespace SINeuronWPFApp.ViewModels
 
             onPropertyChanged(nameof(SeriesCollection));
             onPropertyChanged(nameof(Labels));
+            onPropertyChanged(nameof(EpochNumber));
         }
 
         private void createAxesLabels()
@@ -365,6 +387,7 @@ namespace SINeuronWPFApp.ViewModels
                 var uiPoint = createUIPoint(point);
                 UIPoints.Add(uiPoint);
                 Reset();
+                onPropertyChanged(nameof(PointsNumber));
             }
         }
 
@@ -384,6 +407,7 @@ namespace SINeuronWPFApp.ViewModels
                     SpaceCanvas.Children.Remove(border);
                     UIPoints.RemoveAt(i);
                     TrainingSet.RemoveAt(i);
+                    onPropertyChanged(nameof(PointsNumber));
                     return;
                 }
                 IsSynchronized = false;
@@ -413,6 +437,8 @@ namespace SINeuronWPFApp.ViewModels
             }
         }
 
+        public void EpochPropertyChanged() => onPropertyChanged(nameof(EpochNumber));
+
         public bool InitializeNeuron()
         {
             if (UIPoints.Count < 2)
@@ -421,9 +447,6 @@ namespace SINeuronWPFApp.ViewModels
             Synchronize();
 
             Neuron.Initialize(TrainingSet);
-            //Neuron.Weights[0] = -304;
-            //Neuron.Weights[1] = 40;
-            //Neuron.Weights[2] = 23;
             CompletedLearningPropertyChanged();
             CreateChart();
             IterationPropertyChanged();
@@ -497,6 +520,8 @@ namespace SINeuronWPFApp.ViewModels
                     TrainingSet.Add(createValuePoint(item.Border));
                 }
                 IsSynchronized = true;
+                Neuron.TrainingSet = null;
+                onPropertyChanged(nameof(PointsNumber));
             }
         }
 
@@ -507,6 +532,7 @@ namespace SINeuronWPFApp.ViewModels
                 foreach (var item in TrainingSet)
                     UIPoints.Add(createUIPoint(item));
                 IsSynchronized = true;
+                Neuron.TrainingSet = null;
             }
         }
 

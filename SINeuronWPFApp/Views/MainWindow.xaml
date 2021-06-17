@@ -7,7 +7,7 @@
         xmlns:cfg="clr-namespace:SINeuronWPFApp"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
-        Title="Neuron" Width="1000" Height="520">
+        Title="Neuron" Width="1000" Height="600">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
@@ -69,17 +69,23 @@
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Label Name="w0Label"               Grid.Column="0" Grid.Row="0" Content="w0" />
-                <Label Name="w0ValueLabel"          Grid.Column="1" Grid.Row="0" Content="{Binding Weight0, Mode=OneWay}"/>
-                <Label Name="w1Label"               Grid.Column="0" Grid.Row="1" Content="w1"/>
-                <Label Name="w1ValueLabel"          Grid.Column="1" Grid.Row="1" Content="{Binding Weight1, Mode=OneWay}"/>
-                <Label Name="w2Label"               Grid.Column="0" Grid.Row="2" Content="w2"/>
-                <Label Name="w2ValueLabel"          Grid.Column="1" Grid.Row="2" Content="{Binding Weight2, Mode=OneWay}"/>
-                <Label Name="IterationLabel"        Grid.Column="0" Grid.Row="3" Content="Iteracja"/>
-                <Label Name="IterationValueLabel"   Grid.Column="1" Grid.Row="3" Content="{Binding Iteration, Mode=OneWay}"/>
-                <TextBlock Name="ErrorLabel"        Grid.Column="0" Grid.Row="4" Text="Aktualny błąd" TextWrapping="Wrap" Padding="5"/>
-                <Label Name="ErrorValueLabel"       Grid.Column="1" Grid.Row="4" Content="{Binding Error, Mode=OneWay}"/>
+                <TextBlock Name="PointNumberLabel"  Grid.Column="0" Grid.Row="0" Text="Liczba punktów" TextWrapping="Wrap" Padding="5"/>
+                <Label Name="PointNumberValueLabel" Grid.Column="1" Grid.Row="0" Content="{Binding PointsNumber, Mode=OneWay}"/>
+                <Label Name="w0Label"               Grid.Column="0" Grid.Row="1" Content="Waga 0" />
+                <Label Name="w0ValueLabel"          Grid.Column="1" Grid.Row="1" Content="{Binding Weight0, Mode=OneWay}"/>
+                <Label Name="w1Label"               Grid.Column="0" Grid.Row="2" Content="Waga 1"/>
+                <Label Name="w1ValueLabel"          Grid.Column="1" Grid.Row="2" Content="{Binding Weight1, Mode=OneWay}"/>
+                <Label Name="w2Label"               Grid.Column="0" Grid.Row="3" Content="Waga 2"/>
+                <Label Name="w2ValueLabel"          Grid.Column="1" Grid.Row="3" Content="{Binding Weight2, Mode=OneWay}"/>
+                <Label Name="IterationLabel"        Grid.Column="0" Grid.Row="4" Content="Iteracja"/>
+                <Label Name="IterationValueLabel"   Grid.Column="1" Grid.Row="4" Content="{Binding Iteration, Mode=OneWay}"/>
+                <TextBlock Name="EpochNumberLabel"  Grid.Column="0" Grid.Row="5" Text="Numer epoki" TextWrapping="Wrap" Padding="5"/>
+                <Label Name="EpochNumberValueLabel" Grid.Column="1" Grid.Row="5" Content="{Binding EpochNumber, Mode=OneWay}"/>
+                <TextBlock Name="ErrorLabel"        Grid.Column="0" Grid.Row="6" Text="Aktualny błąd" TextWrapping="Wrap" Padding="5"/>
+                <Label Name="ErrorValueLabel"       Grid.Column="1" Grid.Row="6" Content="{Binding Error, Mode=OneWay}"/>
             </Grid>
 
             <Label Name="ErrorChartLabel" Content="Wykres błędu uczenia"/>
